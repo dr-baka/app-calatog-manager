@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
+{% load catalog_tags %}
 
-{% block title %}Hapus Riwayat Update | App Catalog{% endblock %}
-{% block header_title %}Hapus Riwayat Update{% endblock %}
+{% block title %}{% lang "Hapus Riwayat Update" "Delete Update History" %} | App Catalog{% endblock %}
+{% block header_title %}{% lang "Hapus Riwayat Update" "Delete Update History" %}{% endblock %}
 
 {% block content %}
 <div class="max-w-xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-8">
-    <h2 class="text-xl font-bold mb-3">Hapus {{ object.version|default:"riwayat update" }}?</h2>
+    <h2 class="text-xl font-bold mb-3">{% lang "Hapus" "Delete" %} {{ object.version|default:"riwayat update" }}?</h2>
     <p class="text-sm text-gray-400 mb-8">
-        Riwayat update untuk {{ object.application.name }} tanggal {{ object.date|date:"d M Y" }} akan dihapus.
+        {% lang "Riwayat update untuk" "Update history for" %} {{ object.application.name }} {% lang "tanggal" "dated" %} {{ object.date|date:"d M Y" }} {% lang "akan dihapus." "will be deleted." %}
     </p>
 
     <form method="post" class="flex items-center justify-end gap-4">
         {% csrf_token %}
         <button type="button" onclick="history.back()" class="text-gray-400 hover:text-white font-bold text-sm px-6 py-3 transition">
-            Batal
+            {% lang "Batal" "Cancel" %}
         </button>
         <button type="submit" class="bg-red-600 hover:bg-red-500 text-white font-bold text-sm px-8 py-3 rounded-xl transition">
-            Hapus
+            {% lang "Hapus" "Delete" %}
         </button>
     </form>
 </div>

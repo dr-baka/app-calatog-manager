@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load catalog_tags %}
 
-{% block title %}{{ app.name }} | Detail Aplikasi{% endblock %}
-{% block header_title %}Detail Aplikasi: {{ app.name }}{% endblock %}
+{% block title %}{{ app.name }} | {% lang "Detail Aplikasi" "Application Details" %}{% endblock %}
+{% block header_title %}{% lang "Detail Aplikasi" "Application Details" %}: {{ app.name }}{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -35,7 +35,7 @@
                 {% if app.description %}
                     <div class="markdown-content text-gray-300">{{ app.description|markdownify }}</div>
                 {% else %}
-                    <p class="text-gray-300 leading-relaxed">Tidak ada deskripsi tersedia untuk aplikasi ini.</p>
+                    <p class="text-gray-300 leading-relaxed">{% lang "Tidak ada deskripsi tersedia untuk aplikasi ini." "No description is available for this application." %}</p>
                 {% endif %}
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
@@ -56,7 +56,7 @@
                             <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Status</p>
                             <div class="flex items-center gap-2">
                                 <span class="h-2 w-2 rounded-full {% if env.is_active %}bg-green-500 online-pulse{% else %}bg-red-500{% endif %}"></span>
-                                <p class="text-sm font-bold">{% if env.is_active %}Aktif{% else %}Nonaktif{% endif %}</p>
+                            <p class="text-sm font-bold">{% if env.is_active %}{% lang "Aktif" "Active" %}{% else %}{% lang "Nonaktif" "Inactive" %}{% endif %}</p>
                             </div>
                         </div>
                     {% endwith %}
@@ -68,9 +68,9 @@
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-lg font-bold flex items-center gap-3">
-                    <i class="fas fa-network-wired text-emerald-500"></i> Environment Server
+                    <i class="fas fa-network-wired text-emerald-500"></i> {% lang "Environment Server" "Server Environments" %}
                 </h3>
-                <a href="{% url 'application_environment_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Environment</a>
+                <a href="{% url 'application_environment_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">{% lang "Tambah Environment" "Add Environment" %}</a>
             </div>
             <div class="space-y-5">
                 {% for env in app.ordered_environments %}
@@ -85,24 +85,24 @@
                                 {% else %}
                                     <span class="px-2 py-1 text-[10px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-md">DEV</span>
                                 {% endif %}
-                                <span class="text-xs text-gray-400">{% if env.is_active %}Aktif{% else %}Nonaktif{% endif %}</span>
+                                <span class="text-xs text-gray-400">{% if env.is_active %}{% lang "Aktif" "Active" %}{% else %}{% lang "Nonaktif" "Inactive" %}{% endif %}</span>
                             </div>
-                            <p class="text-sm font-bold text-gray-200">{{ env.server.name|default:"Belum terhubung ke server" }}</p>
+                            <p class="text-sm font-bold text-gray-200">{% if env.server %}{{ env.server.name }}{% else %}{% lang "Belum terhubung ke server" "Not connected to a server yet" %}{% endif %}</p>
                             <p class="text-xs text-gray-500 font-mono mt-1">{{ env.url|default:"-" }}</p>
                             <p class="text-xs text-gray-500 font-mono mt-1">{{ env.local_ip|default:"-" }}:{{ env.port|default:"-" }}</p>
                         </div>
                         <div class="flex gap-3">
                             {% if env.url %}
-                            <a href="{{ env.url }}" target="_blank" class="text-xs font-bold text-blue-400 hover:text-blue-300">Buka</a>
+                            <a href="{{ env.url }}" target="_blank" class="text-xs font-bold text-blue-400 hover:text-blue-300">{% lang "Buka" "Open" %}</a>
                             {% endif %}
                             <a href="{% url 'application_environment_update' env.pk %}" class="text-xs font-bold text-gray-500 hover:text-yellow-400">Edit</a>
-                            <a href="{% url 'application_environment_delete' env.pk %}" class="text-xs font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                            <a href="{% url 'application_environment_delete' env.pk %}" class="text-xs font-bold text-gray-500 hover:text-red-400">{% lang "Hapus" "Delete" %}</a>
                         </div>
                     </div>
                     {% if env.server %}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 border-t border-gray-700/50 pt-5">
                         <div>
-                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Public IP / Host</p>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">{% lang "Public IP / Host" "Public IP / Host" %}</p>
                             <p class="text-xs font-mono text-blue-400">{{ env.server.host_ip }}</p>
                         </div>
                         <div>
@@ -122,7 +122,7 @@
                     {% endif %}
                 </div>
                 {% empty %}
-                <p class="text-center text-gray-500 text-sm py-4">Belum ada environment untuk aplikasi ini.</p>
+                <p class="text-center text-gray-500 text-sm py-4">{% lang "Belum ada environment untuk aplikasi ini." "No environments for this application yet." %}</p>
                 {% endfor %}
             </div>
         </div>
@@ -138,7 +138,7 @@
                         {{ app.deployment_notes|markdownify }}
                     </div>
                 {% else %}
-                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">Belum ada catatan deployment.</div>
+                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">{% lang "Belum ada catatan deployment." "No deployment notes yet." %}</div>
                 {% endif %}
             </div>
             <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
@@ -150,7 +150,7 @@
                         {{ app.maintenance_notes|markdownify }}
                     </div>
                 {% else %}
-                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">Tidak ada catatan maintenance aktif.</div>
+                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">{% lang "Tidak ada catatan maintenance aktif." "No active maintenance notes." %}</div>
                 {% endif %}
             </div>
         </div>
@@ -159,9 +159,9 @@
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-lg font-bold flex items-center gap-3">
-                    <i class="fas fa-history text-purple-500"></i> Riwayat Update
+                    <i class="fas fa-history text-purple-500"></i> {% lang "Riwayat Update" "Update History" %}
                 </h3>
-                <a href="{% url 'update_history_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Log</a>
+                <a href="{% url 'update_history_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">{% lang "Tambah Log" "Add Log" %}</a>
             </div>
             <div class="space-y-6">
                 {% for update in app.history.all %}
@@ -174,11 +174,11 @@
                     <div class="markdown-content text-xs text-gray-400">{{ update.notes|markdownify }}</div>
                     <div class="flex gap-3 mt-3">
                         <a href="{% url 'update_history_update' update.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-yellow-400">Edit</a>
-                        <a href="{% url 'update_history_delete' update.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                        <a href="{% url 'update_history_delete' update.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">{% lang "Hapus" "Delete" %}</a>
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-center text-gray-500 text-sm py-4">Belum ada riwayat update.</p>
+                <p class="text-center text-gray-500 text-sm py-4">{% lang "Belum ada riwayat update." "No update history yet." %}</p>
                 {% endfor %}
             </div>
         </div>
@@ -189,19 +189,19 @@
         <!-- Action Card -->
         <div class="bg-blue-600 p-8 rounded-2xl shadow-2xl shadow-blue-600/20 text-white">
             {% with env=app.highest_environment %}
-            <h3 class="font-bold text-lg mb-4">Akses Cepat</h3>
+            <h3 class="font-bold text-lg mb-4">{% lang "Akses Cepat" "Quick Access" %}</h3>
             <div class="space-y-3">
                 <a href="{{ env.url|default:'#' }}" target="_blank" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-xl transition-all border border-white/10">
-                    <span class="font-bold">Buka Aplikasi</span>
+                    <span class="font-bold">{% lang "Buka Aplikasi" "Open Application" %}</span>
                     <i class="fas fa-external-link-alt"></i>
                 </a>
                 <a href="{{ app.repository }}" target="_blank" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-xl transition-all border border-white/10">
-                    <span class="font-bold">Repositori Git</span>
+                    <span class="font-bold">{% lang "Repositori Git" "Git Repository" %}</span>
                     <i class="fab fa-github"></i>
                 </a>
             </div>
             <div class="mt-6 flex gap-3">
-                <a href="{% url 'application_update' app.slug %}" class="flex-1 text-center bg-white text-blue-600 font-bold py-3 rounded-xl hover:bg-gray-100 transition">Edit Data</a>
+                <a href="{% url 'application_update' app.slug %}" class="flex-1 text-center bg-white text-blue-600 font-bold py-3 rounded-xl hover:bg-gray-100 transition">{% lang "Edit Data" "Edit Data" %}</a>
             </div>
             {% endwith %}
         </div>
@@ -209,10 +209,10 @@
         <!-- Admin Contact -->
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
             <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
-                <i class="fas fa-user-shield text-orange-500"></i> Admin Aplikasi
+                <i class="fas fa-user-shield text-orange-500"></i> {% lang "Admin Aplikasi" "Application Admins" %}
             </h3>
             <div class="mb-6">
-                <a href="{% url 'app_admin_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Admin</a>
+                <a href="{% url 'app_admin_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">{% lang "Tambah Admin" "Add Admin" %}</a>
             </div>
             <div class="space-y-6">
                 {% for admin in app.admins.all %}
@@ -237,11 +237,11 @@
                     {% endif %}
                     <div class="mt-4 flex gap-3 border-t border-gray-700/50 pt-3">
                         <a href="{% url 'app_admin_update' admin.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-yellow-400">Edit</a>
-                        <a href="{% url 'app_admin_delete' admin.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                        <a href="{% url 'app_admin_delete' admin.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">{% lang "Hapus" "Delete" %}</a>
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-sm text-gray-500">Belum ada admin terdaftar.</p>
+                <p class="text-sm text-gray-500">{% lang "Belum ada admin terdaftar." "No admins registered yet." %}</p>
                 {% endfor %}
             </div>
         </div>

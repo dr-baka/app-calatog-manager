@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="id">
+{% load i18n catalog_tags static %}
+{% get_current_language as CURRENT_LANGUAGE %}
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,17 +107,19 @@
     <main class="min-h-screen grid lg:grid-cols-[1.1fr_0.9fr]">
         <section class="login-hero hidden lg:flex flex-col justify-between border-r border-gray-800 bg-gray-950 px-12 py-10">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                    <i class="fas fa-layer-group text-white text-lg"></i>
+                <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
+                    <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
                 </div>
                 <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent">AppCatalog</span>
             </div>
 
             <div class="max-w-xl">
                 <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">Catalog Manager</p>
-                <h1 class="text-5xl font-bold leading-tight text-white">Kelola aplikasi, server, dan kategori dari satu tempat.</h1>
+                <h1 class="text-5xl font-bold leading-tight text-white">
+                    {% lang "Kelola aplikasi, server, dan kategori dari satu tempat." "Manage applications, servers, and categories from one place." %}
+                </h1>
                 <p class="mt-6 text-base leading-7 text-gray-400">
-                    Masuk untuk melihat dashboard operasional dan memperbarui data katalog aplikasi internal.
+                    {% lang "Masuk untuk melihat dashboard operasional dan memperbarui data katalog aplikasi internal." "Sign in to view the operational dashboard and update the internal application catalog." %}
                 </p>
             </div>
 
@@ -125,13 +129,19 @@
         <section class="login-main flex items-center justify-center px-6 py-12">
             <div class="w-full max-w-md">
                 <div class="mb-10 flex items-center gap-3 lg:hidden">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                        <i class="fas fa-layer-group text-white text-lg"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
+                        <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
                     </div>
                     <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent">AppCatalog</span>
                 </div>
 
-                <div class="mb-4 flex justify-end">
+                <div class="mb-4 flex justify-end gap-3">
+                    <form action="{% url 'set_language' %}" method="post" class="flex items-center rounded-full border border-gray-700 bg-gray-800 p-1">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                        <button type="submit" name="language" value="id" class="px-2.5 py-1 rounded-full text-[10px] font-bold {% if CURRENT_LANGUAGE == 'id' %}bg-blue-600 text-white{% else %}text-gray-400{% endif %}">ID</button>
+                        <button type="submit" name="language" value="en" class="px-2.5 py-1 rounded-full text-[10px] font-bold {% if CURRENT_LANGUAGE == 'en' %}bg-blue-600 text-white{% else %}text-gray-400{% endif %}">EN</button>
+                    </form>
                     <button id="theme-toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:text-white transition" title="Ganti mode tampilan" aria-label="Ganti mode tampilan">
                         <i id="theme-toggle-icon" class="fas fa-moon"></i>
                     </button>
@@ -139,19 +149,21 @@
 
                 <div class="login-card rounded-2xl border border-gray-800 bg-gray-800/50 p-8 shadow-2xl shadow-black/30">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-white">Login</h2>
-                        <p class="mt-2 text-sm text-gray-400">Gunakan akun Django yang sudah terdaftar.</p>
+                        <h2 class="text-2xl font-bold text-white">{% lang "Masuk" "Login" %}</h2>
+                        <p class="mt-2 text-sm text-gray-400">
+                            {% lang "Gunakan akun Django yang sudah terdaftar." "Use an existing Django account." %}
+                        </p>
                     </div>
 
                     {% if form.errors %}
                         <div class="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
-                            Username atau password tidak sesuai.
+                            {% lang "Username atau password tidak sesuai." "Username or password is incorrect." %}
                         </div>
                     {% endif %}
 
                     {% if next %}
                         <div class="mb-6 rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 text-sm text-blue-300">
-                            Silakan login untuk membuka halaman tersebut.
+                            {% lang "Silakan login untuk membuka halaman tersebut." "Please log in to open that page." %}
                         </div>
                     {% endif %}
 
@@ -190,7 +202,7 @@
                         </div>
 
                         <button type="submit" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800">
-                            Masuk
+                            {% lang "Masuk" "Sign in" %}
                         </button>
                     </form>
                 </div>

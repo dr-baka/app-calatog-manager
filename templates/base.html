@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="id">
+{% load i18n catalog_tags static %}
+{% get_current_language as CURRENT_LANGUAGE %}
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -238,21 +240,21 @@
         <aside class="w-64 bg-gray-800/50 border-r border-gray-700 hidden lg:flex flex-col">
             <div class="p-6">
                 <div class="flex items-center gap-3 mb-10">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                        <i class="fas fa-layer-group text-white text-lg"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
+                        <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
                     </div>
                     <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AppCatalog</span>
                 </div>
                 
                 <nav class="space-y-2">
                     <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                        <i class="fas fa-th-large w-6"></i> Dashboard
+                        <i class="fas fa-th-large w-6"></i> {% lang "Dashboard" "Dashboard" %}
                     </a>
                     <a href="{% url 'application_list' %}" class="sidebar-item {% if 'application' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="fas fa-rocket w-6"></i> Aplikasi
+                        <i class="fas fa-rocket w-6"></i> {% lang "Aplikasi" "Applications" %}
                     </a>
                     <a href="{% url 'category_list' %}" class="sidebar-item {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="fas fa-tags w-6"></i> Kategori
+                        <i class="fas fa-tags w-6"></i> {% lang "Kategori" "Categories" %}
                     </a>
                     <a href="{% url 'server_list' %}" class="sidebar-item {% if 'server' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="fas fa-server w-6"></i> Server
@@ -274,7 +276,7 @@
                     {% csrf_token %}
                     <button type="submit" class="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-xs font-semibold text-gray-300 hover:border-red-500/40 hover:text-red-300 transition">
                         <i class="fas fa-right-from-bracket"></i>
-                        Logout
+                        {% lang "Keluar" "Logout" %}
                     </button>
                 </form>
             </div>
@@ -288,9 +290,15 @@
                 
                 <div class="flex items-center gap-4">
                     <div class="relative">
-                        <input type="text" placeholder="Cari aplikasi..." class="bg-gray-800 border border-gray-700 rounded-full py-1.5 px-4 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-64 transition-all">
+                        <input type="text" placeholder="{% lang 'Cari aplikasi...' 'Search applications...' %}" class="bg-gray-800 border border-gray-700 rounded-full py-1.5 px-4 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-64 transition-all">
                         <i class="fas fa-search absolute left-4 top-2.5 text-gray-500 text-xs"></i>
                     </div>
+                    <form action="{% url 'set_language' %}" method="post" class="flex items-center rounded-full border border-gray-700 bg-gray-800 p-1">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                        <button type="submit" name="language" value="id" class="px-2.5 py-1 rounded-full text-[10px] font-bold {% if CURRENT_LANGUAGE == 'id' %}bg-blue-600 text-white{% else %}text-gray-400{% endif %}">ID</button>
+                        <button type="submit" name="language" value="en" class="px-2.5 py-1 rounded-full text-[10px] font-bold {% if CURRENT_LANGUAGE == 'en' %}bg-blue-600 text-white{% else %}text-gray-400{% endif %}">EN</button>
+                    </form>
                     <button class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:text-white transition">
                         <i class="fas fa-bell"></i>
                     </button>

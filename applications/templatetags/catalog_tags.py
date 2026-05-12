@@ -5,6 +5,13 @@ import re
 
 register = template.Library()
 
+
+@register.simple_tag(takes_context=True)
+def lang(context, id_text, en_text):
+    request = context.get('request')
+    language = getattr(request, 'LANGUAGE_CODE', 'id')
+    return en_text if language == 'en' else id_text
+
 @register.filter
 def verbose_name(obj):
     if hasattr(obj, '_meta'):

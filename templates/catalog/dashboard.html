@@ -2,7 +2,7 @@
 {% load catalog_tags %}
 
 {% block title %}Dashboard | App Catalog{% endblock %}
-{% block header_title %}Control Center Overview{% endblock %}
+{% block header_title %}{% lang "Ringkasan Control Center" "Control Center Overview" %}{% endblock %}
 
 {% block content %}
 <!-- Stats Grid -->
@@ -14,7 +14,7 @@
                 <i class="fas fa-rocket text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Total Aplikasi</p>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">{% lang "Total Aplikasi" "Total Applications" %}</p>
                 <h3 class="text-2xl font-bold">{{ total_apps }}</h3>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <i class="fas fa-vial text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Beta / Test</p>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">{% lang "Beta / Test" "Beta / Test" %}</p>
                 <h3 class="text-2xl font-bold">{{ beta_count }}</h3>
             </div>
         </div>
@@ -53,7 +53,7 @@
                 <i class="fas fa-server text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Total Server</p>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">{% lang "Total Server" "Total Servers" %}</p>
                 <h3 class="text-2xl font-bold">{{ total_servers }}</h3>
             </div>
         </div>
@@ -63,14 +63,14 @@
 <!-- Header Apps -->
 <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl font-bold flex items-center gap-2">
-        <i class="fas fa-list-ul text-blue-500"></i> Daftar Aplikasi
+        <i class="fas fa-list-ul text-blue-500"></i> {% lang "Daftar Aplikasi" "Application List" %}
     </h2>
     <div class="flex items-center gap-3">
         <select class="bg-gray-800 border border-gray-700 rounded-lg py-1.5 px-3 text-sm text-gray-300 focus:outline-none">
-            <option>Semua Kategori</option>
+            <option>{% lang "Semua Kategori" "All Categories" %}</option>
         </select>
         <a href="{% url 'application_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
-            <i class="fas fa-plus"></i> Tambah App
+            <i class="fas fa-plus"></i> {% lang "Tambah App" "Add App" %}
         </a>
     </div>
 </div>
@@ -112,13 +112,13 @@
             {% if app.description %}
                 <div class="markdown-content text-gray-400 text-sm line-clamp-2 min-h-[2.5rem]">{{ app.description|markdownify }}</div>
             {% else %}
-                <p class="text-gray-400 text-sm line-clamp-2 min-h-[2.5rem]">Tidak ada deskripsi.</p>
+                <p class="text-gray-400 text-sm line-clamp-2 min-h-[2.5rem]">{% lang "Tidak ada deskripsi." "No description." %}</p>
             {% endif %}
         </div>
         
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="bg-gray-900/50 p-2 rounded-lg border border-gray-700/50">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-0.5">Category</p>
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-0.5">{% lang "Kategori" "Category" %}</p>
                 <p class="text-xs font-semibold">{{ app.category.name|default:"General" }}</p>
             </div>
             <div class="bg-gray-900/50 p-2 rounded-lg border border-gray-700/50">
@@ -129,10 +129,10 @@
 
         <div class="flex items-center gap-2">
             <a href="{% url 'application_detail' app.slug %}" class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold py-2.5 rounded-lg transition">
-                Detail
+                {% lang "Detail" "Details" %}
             </a>
             <a href="{{ env.url|default:'#' }}" target="_blank" class="flex-1 text-center {% if env.environment == 'PROD' %}bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20{% elif env.environment == 'BETA' %}bg-yellow-600 hover:bg-yellow-500 shadow-yellow-600/20{% else %}bg-blue-600 hover:bg-blue-500 shadow-blue-600/20{% endif %} text-white text-xs font-bold py-2.5 rounded-lg transition shadow-lg">
-                Open Console <i class="fas fa-external-link-alt ml-1 text-[10px]"></i>
+                {% lang "Buka Console" "Open Console" %} <i class="fas fa-external-link-alt ml-1 text-[10px]"></i>
             </a>
         </div>
         
@@ -147,10 +147,10 @@
         <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
             <i class="fas fa-folder-open text-gray-600 text-2xl"></i>
         </div>
-        <h3 class="text-lg font-bold text-gray-400">Belum ada aplikasi</h3>
-        <p class="text-gray-500 mb-6">Mulai tambahkan aplikasi pertama Anda sekarang.</p>
+        <h3 class="text-lg font-bold text-gray-400">{% lang "Belum ada aplikasi" "No applications yet" %}</h3>
+        <p class="text-gray-500 mb-6">{% lang "Mulai tambahkan aplikasi pertama Anda sekarang." "Start by adding your first application." %}</p>
         <a href="{% url 'application_create' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg transition">
-            <i class="fas fa-plus"></i> Tambah Aplikasi
+            <i class="fas fa-plus"></i> {% lang "Tambah Aplikasi" "Add Application" %}
         </a>
     </div>
     {% endfor %}
@@ -159,6 +159,12 @@
 
 {% block extra_js %}
 <script>
+    const statusText = {
+        noUrl: "{% lang 'No URL' 'No URL' %}",
+        online: "{% lang 'Online' 'Online' %}",
+        offline: "{% lang 'Offline' 'Offline' %}"
+    };
+
     async function checkStatus(appId, statusUrl) {
         const dot = document.getElementById(`dot-${appId}`);
         const text = document.getElementById(`text-${appId}`);
@@ -166,7 +172,7 @@
 
         if (!statusUrl) {
             dot.className = "status-dot h-3 w-3 bg-gray-600 rounded-full";
-            text.innerText = "No URL";
+            text.innerText = statusText.noUrl;
             return;
         }
 
@@ -183,12 +189,12 @@
 
             if (result.online) {
                 dot.className = "status-dot h-3 w-3 bg-green-500 rounded-full online-pulse";
-                text.innerText = "Online";
+                text.innerText = statusText.online;
                 text.className = "text-[10px] uppercase mt-1 text-green-500 font-bold";
                 card.classList.remove('opacity-60');
             } else {
                 dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
-                text.innerText = "Offline";
+                text.innerText = statusText.offline;
                 text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
                 card.classList.add('opacity-60');
             }
@@ -196,7 +202,7 @@
 
         } catch (err) {
             dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
-            text.innerText = "Offline";
+            text.innerText = statusText.offline;
             text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
             card.classList.add('opacity-60');
         }

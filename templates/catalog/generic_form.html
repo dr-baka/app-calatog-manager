@@ -3,15 +3,15 @@
 
 {% block title %}{{ view.model|verbose_name }} | App Catalog{% endblock %}
 {% block header_title %}
-    {% if object %}Edit {{ object.name }}{% else %}Tambah {{ view.model|verbose_name }}{% endif %}
+    {% if object %}{% lang "Edit" "Edit" %} {{ object.name }}{% else %}{% lang "Tambah" "Add" %} {{ view.model|verbose_name }}{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
         <div class="p-8 border-b border-gray-700 bg-gray-800/50">
-            <h2 class="text-xl font-bold">Informasi {{ view.model|verbose_name }}</h2>
-            <p class="text-gray-400 text-sm mt-1">Lengkapi detail data, field catatan mendukung Markdown.</p>
+            <h2 class="text-xl font-bold">{% lang "Informasi" "Information" %} {{ view.model|verbose_name }}</h2>
+            <p class="text-gray-400 text-sm mt-1">{% lang "Lengkapi detail data, field catatan mendukung Markdown." "Complete the data details. Notes fields support Markdown." %}</p>
         </div>
         
         <form method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
@@ -33,7 +33,7 @@
                     {% elif field.name == 'description' or field.name == 'maintenance_notes' or field.name == 'deployment_notes' or field.name == 'specs' or field.name == 'access_notes' or field.name == 'notes' %}
                         <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="6" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">{{ field.value|default:"" }}</textarea>
                         <p class="text-[10px] text-blue-300">
-                            Mendukung Markdown: **tebal**, - list, `kode`, dan blok kode.
+                            {% lang "Mendukung Markdown: **tebal**, - list, `kode`, dan blok kode." "Supports Markdown: **bold**, - list, `code`, and code blocks." %}
                         </p>
                     {% else %}
                         <div class="relative">
@@ -68,10 +68,10 @@
 
             <div class="pt-6 border-t border-gray-700 flex items-center justify-end gap-4">
                 <button type="button" onclick="history.back()" class="text-gray-400 hover:text-white font-bold text-sm px-6 py-3 transition">
-                    Batal
+                    {% lang "Batal" "Cancel" %}
                 </button>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-10 py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
-                    Simpan Perubahan
+                    {% lang "Simpan Perubahan" "Save Changes" %}
                 </button>
             </div>
         </form>

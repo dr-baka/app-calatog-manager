@@ -7,6 +7,7 @@ from applications.views import dashboard
 
 urlpatterns = [
     path(settings.ADMIN_PATH, admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path(
         'login/',
         auth_views.LoginView.as_view(

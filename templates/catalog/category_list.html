@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load catalog_tags %}
 
-{% block title %}Kategori | App Catalog{% endblock %}
-{% block header_title %}Kategori Aplikasi{% endblock %}
+{% block title %}{% lang "Kategori" "Categories" %} | App Catalog{% endblock %}
+{% block header_title %}{% lang "Kategori Aplikasi" "Application Categories" %}{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-between mb-8">
     <h2 class="text-xl font-bold flex items-center gap-2">
-        <i class="fas fa-tags text-blue-500"></i> Kelola Kategori
+        <i class="fas fa-tags text-blue-500"></i> {% lang "Kelola Kategori" "Manage Categories" %}
     </h2>
     <a href="{% url 'category_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
-        <i class="fas fa-plus"></i> Tambah Kategori
+        <i class="fas fa-plus"></i> {% lang "Tambah Kategori" "Add Category" %}
     </a>
 </div>
 
@@ -30,16 +30,16 @@
         {% if category.description %}
             <div class="markdown-content text-gray-400 text-sm mb-4">{{ category.description|markdownify }}</div>
         {% else %}
-            <p class="text-gray-400 text-sm mb-4">Tidak ada deskripsi.</p>
+            <p class="text-gray-400 text-sm mb-4">{% lang "Tidak ada deskripsi." "No description." %}</p>
         {% endif %}
         <div class="flex items-center justify-between pt-4 border-t border-gray-700/50">
-            <span class="text-xs font-bold text-gray-500 uppercase">Aplikasi</span>
+            <span class="text-xs font-bold text-gray-500 uppercase">{% lang "Aplikasi" "Applications" %}</span>
             <span class="bg-gray-900 px-3 py-1 rounded-full text-xs font-bold text-blue-400 border border-blue-500/20">{{ category.applications.count }}</span>
         </div>
     </div>
     {% empty %}
     <div class="col-span-full py-20 text-center">
-        <p class="text-gray-500">Belum ada kategori.</p>
+        <p class="text-gray-500">{% lang "Belum ada kategori." "No categories yet." %}</p>
     </div>
     {% endfor %}
 </div>

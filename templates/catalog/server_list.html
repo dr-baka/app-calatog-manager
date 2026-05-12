@@ -2,15 +2,15 @@
 {% load catalog_tags %}
 
 {% block title %}Server | App Catalog{% endblock %}
-{% block header_title %}Manajemen Server{% endblock %}
+{% block header_title %}{% lang "Manajemen Server" "Server Management" %}{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-between mb-8">
     <h2 class="text-xl font-bold flex items-center gap-2">
-        <i class="fas fa-server text-blue-500"></i> Daftar Server
+        <i class="fas fa-server text-blue-500"></i> {% lang "Daftar Server" "Server List" %}
     </h2>
     <a href="{% url 'server_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
-        <i class="fas fa-plus"></i> Tambah Server
+        <i class="fas fa-plus"></i> {% lang "Tambah Server" "Add Server" %}
     </a>
 </div>
 
@@ -38,7 +38,7 @@
                 <p class="text-sm font-semibold">{{ server.provider|default:"-" }}</p>
             </div>
             <div>
-                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Location</p>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">{% lang "Lokasi" "Location" %}</p>
                 <p class="text-sm font-semibold">{{ server.location|default:"-" }}</p>
             </div>
             <div>
@@ -46,13 +46,13 @@
                 <p class="text-sm font-semibold">{{ server.os|default:"-" }}</p>
             </div>
             <div class="col-span-full">
-                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Spesifikasi</p>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">{% lang "Spesifikasi" "Specifications" %}</p>
                 {% if server.specs %}
                     <div class="markdown-content bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">
                         {{ server.specs|markdownify }}
                     </div>
                 {% else %}
-                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">Tidak ada info spesifikasi.</div>
+                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">{% lang "Tidak ada info spesifikasi." "No specification info." %}</div>
                 {% endif %}
             </div>
             <div class="col-span-full">
@@ -62,18 +62,18 @@
                         {{ server.deployment_notes|markdownify }}
                     </div>
                 {% else %}
-                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">Tidak ada catatan deployment.</div>
+                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">{% lang "Tidak ada catatan deployment." "No deployment notes." %}</div>
                 {% endif %}
             </div>
         </div>
         <div class="px-6 py-4 bg-gray-900/30 border-t border-gray-700/50 flex justify-between items-center">
-            <span class="text-xs text-gray-500"><i class="fas fa-rocket mr-2"></i> {{ server.applications_count }} Aplikasi Berjalan</span>
+            <span class="text-xs text-gray-500"><i class="fas fa-rocket mr-2"></i> {{ server.applications_count }} {% lang "Aplikasi Berjalan" "Running Applications" %}</span>
             <span class="text-xs text-gray-500"><i class="fas fa-user mr-2"></i> {{ server.username|default:"root" }}</span>
         </div>
     </div>
     {% empty %}
     <div class="col-span-full py-20 text-center">
-        <p class="text-gray-500">Belum ada server.</p>
+        <p class="text-gray-500">{% lang "Belum ada server." "No servers yet." %}</p>
     </div>
     {% endfor %}
 </div>

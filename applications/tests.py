@@ -31,6 +31,19 @@ class AuthenticationTests(TestCase):
         self.assertContains(response, 'name="username"')
         self.assertContains(response, 'name="password"')
 
+    def test_login_page_supports_english_language(self):
+        response = self.client.get(reverse('login'), HTTP_ACCEPT_LANGUAGE='en')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Manage applications, servers, and categories from one place.')
+        self.assertContains(response, 'Sign in')
+
+    def test_language_toggle_stores_selected_language(self):
+        response = self.client.post('/i18n/setlang/', {'language': 'en', 'next': reverse('login')})
+
+        self.assertRedirects(response, reverse('login'))
+        self.assertEqual(self.client.cookies['django_language'].value, 'en')
+
     def test_logout_ends_authenticated_session(self):
         self.client.force_login(self.user)
 
@@ -192,3 +205,20 @@ class ApplicationManagementTests(TestCase):
 
         self.assertRedirects(response, reverse('application_detail', kwargs={'slug': self.app.slug}))
         self.assertTrue(self.app.environments.filter(environment='DEV', url='https://dev.example.com').exists())
+
+    def test_core_catalog_pages_support_english_language(self):
+        ApplicationEnvironment.objects.create(application=self.app, environment='PROD', server=self.server)
+
+        pages = [
+            (reverse('dashboard'), 'Application List'),
+            (reverse('application_list'), 'All Applications'),
+            (reverse('application_detail', kwargs={'slug': self.app.slug}), 'Application Details'),
+            (reverse('category_list'), 'Application Categories'),
+            (reverse('server_list'), 'Server Management'),
+        ]
+
+        for url, expected_text in pages:
+            with self.subTest(url=url):
+                response = self.client.get(url, HTTP_ACCEPT_LANGUAGE='en')
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, expected_text)

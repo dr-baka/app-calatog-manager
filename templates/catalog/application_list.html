@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
+{% load catalog_tags %}
 
-{% block title %}Daftar Aplikasi | App Catalog{% endblock %}
-{% block header_title %}Semua Aplikasi{% endblock %}
+{% block title %}{% lang "Daftar Aplikasi" "Application List" %} | App Catalog{% endblock %}
+{% block header_title %}{% lang "Semua Aplikasi" "All Applications" %}{% endblock %}
 
 {% block content %}
 <div class="mb-10">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl">
         <form method="GET" class="flex flex-wrap items-center gap-4 flex-1">
             <div class="relative min-w-[200px]">
-                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Cari nama..." class="bg-gray-900 border border-gray-700 rounded-lg py-2 px-4 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-full">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="{% lang 'Cari nama...' 'Search name...' %}" class="bg-gray-900 border border-gray-700 rounded-lg py-2 px-4 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-full">
                 <i class="fas fa-search absolute left-4 top-3 text-gray-500 text-xs"></i>
             </div>
             
             <select name="env" class="bg-gray-900 border border-gray-700 rounded-lg py-2 px-4 text-sm text-gray-300 focus:outline-none">
-                <option value="">Semua Env</option>
+                <option value="">{% lang "Semua Env" "All Env" %}</option>
                 <option value="DEV" {% if request.GET.env == 'DEV' %}selected{% endif %}>Development</option>
                 <option value="BETA" {% if request.GET.env == 'BETA' %}selected{% endif %}>Beta</option>
                 <option value="PROD" {% if request.GET.env == 'PROD' %}selected{% endif %}>Production</option>
             </select>
 
             <button type="submit" class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold py-2 px-6 rounded-lg transition">
-                Filter
+                {% lang "Filter" "Filter" %}
             </button>
             {% if request.GET.q or request.GET.env %}
-                <a href="{% url 'application_list' %}" class="text-gray-500 hover:text-white text-sm">Reset</a>
+                <a href="{% url 'application_list' %}" class="text-gray-500 hover:text-white text-sm">{% lang "Reset" "Reset" %}</a>
             {% endif %}
         </form>
         
         <a href="{% url 'application_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20">
-            <i class="fas fa-plus"></i> Tambah App
+            <i class="fas fa-plus"></i> {% lang "Tambah App" "Add App" %}
         </a>
     </div>
 </div>
@@ -37,12 +38,12 @@
     <table class="w-full text-left">
         <thead>
             <tr class="border-b border-gray-700 bg-gray-800/50">
-                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Aplikasi</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{% lang "Aplikasi" "Application" %}</th>
                 <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Environment</th>
-                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Kategori</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{% lang "Kategori" "Category" %}</th>
                 <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">IP / Port</th>
                 <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Aksi</th>
+                <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{% lang "Aksi" "Actions" %}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-700/50">
@@ -89,13 +90,13 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                        <a href="{% url 'application_detail' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-blue-600 transition text-gray-400 hover:text-white" title="Detail">
+                        <a href="{% url 'application_detail' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-blue-600 transition text-gray-400 hover:text-white" title="{% lang 'Detail' 'Details' %}">
                             <i class="fas fa-eye text-xs"></i>
                         </a>
-                        <a href="{% url 'application_update' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-yellow-600 transition text-gray-400 hover:text-white" title="Edit">
+                        <a href="{% url 'application_update' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-yellow-600 transition text-gray-400 hover:text-white" title="{% lang 'Edit' 'Edit' %}">
                             <i class="fas fa-edit text-xs"></i>
                         </a>
-                        <a href="{% url 'application_delete' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-red-600 transition text-gray-400 hover:text-white" title="Hapus">
+                        <a href="{% url 'application_delete' app.slug %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-red-600 transition text-gray-400 hover:text-white" title="{% lang 'Hapus' 'Delete' %}">
                             <i class="fas fa-trash text-xs"></i>
                         </a>
                     </div>
@@ -104,7 +105,7 @@
             {% endwith %}
             {% empty %}
             <tr>
-                <td colspan="6" class="px-6 py-10 text-center text-gray-500">Tidak ada aplikasi ditemukan.</td>
+                <td colspan="6" class="px-6 py-10 text-center text-gray-500">{% lang "Tidak ada aplikasi ditemukan." "No applications found." %}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -114,13 +115,19 @@
 
 {% block extra_js %}
 <script>
+    const statusText = {
+        noUrl: "{% lang 'No URL' 'No URL' %}",
+        online: "{% lang 'Online' 'Online' %}",
+        offline: "{% lang 'Offline' 'Offline' %}"
+    };
+
     async function checkStatus(appId, statusUrl) {
         const dot = document.getElementById(`dot-list-${appId}`);
         const text = document.getElementById(`text-list-${appId}`);
 
         if (!statusUrl) {
             dot.className = "h-2 w-2 bg-gray-600 rounded-full";
-            text.innerText = "No URL";
+            text.innerText = statusText.noUrl;
             return;
         }
 
@@ -137,17 +144,17 @@
 
             if (result.online) {
                 dot.className = "h-2 w-2 bg-green-500 rounded-full online-pulse";
-                text.innerText = "Online";
+                text.innerText = statusText.online;
                 text.className = "text-[10px] font-bold text-green-500 uppercase";
             } else {
                 dot.className = "h-2 w-2 bg-red-600 rounded-full";
-                text.innerText = "Offline";
+                text.innerText = statusText.offline;
                 text.className = "text-[10px] font-bold text-red-500 uppercase";
             }
             clearTimeout(timeoutId);
         } catch (err) {
             dot.className = "h-2 w-2 bg-red-600 rounded-full";
-            text.innerText = "Offline";
+            text.innerText = statusText.offline;
             text.className = "text-[10px] font-bold text-red-500 uppercase";
         }
     }
