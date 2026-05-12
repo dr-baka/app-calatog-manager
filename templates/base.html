@@ -86,10 +86,120 @@
             border: 0;
             padding: 0;
         }
+
+        body,
+        aside,
+        main,
+        header,
+        footer,
+        input,
+        select,
+        textarea,
+        button,
+        a,
+        div,
+        table,
+        tr,
+        td,
+        th {
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        body.light-mode {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+        body.light-mode .bg-gray-950,
+        body.light-mode .bg-gray-900,
+        body.light-mode .bg-gray-900\/50,
+        body.light-mode .bg-gray-900\/30 {
+            background-color: #f8fafc !important;
+        }
+        body.light-mode .bg-gray-800,
+        body.light-mode .bg-gray-800\/50,
+        body.light-mode .bg-gray-700 {
+            background-color: #ffffff !important;
+        }
+        body.light-mode .border-gray-800,
+        body.light-mode .border-gray-700,
+        body.light-mode .border-gray-700\/50,
+        body.light-mode .border-gray-800\/50 {
+            border-color: #e2e8f0 !important;
+        }
+        body.light-mode .text-gray-100,
+        body.light-mode .text-gray-200,
+        body.light-mode .text-white {
+            color: #0f172a !important;
+        }
+        body.light-mode .text-gray-300,
+        body.light-mode .text-gray-400 {
+            color: #334155 !important;
+        }
+        body.light-mode .text-gray-500,
+        body.light-mode .text-gray-600 {
+            color: #64748b !important;
+        }
+        body.light-mode .shadow-xl,
+        body.light-mode .shadow-2xl,
+        body.light-mode .shadow-lg {
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
+        }
+        body.light-mode input,
+        body.light-mode select,
+        body.light-mode textarea {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        body.light-mode input::placeholder,
+        body.light-mode textarea::placeholder {
+            color: #94a3b8 !important;
+        }
+        body.light-mode .glass {
+            background: rgba(255, 255, 255, 0.82);
+            border-color: rgba(226, 232, 240, 0.95);
+        }
+        body.light-mode .sidebar-item {
+            color: #475569;
+        }
+        body.light-mode .sidebar-item:hover {
+            color: #0f172a;
+            background-color: #f1f5f9;
+        }
+        body.light-mode .sidebar-item.active {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+        body.light-mode .markdown-content h1,
+        body.light-mode .markdown-content h2,
+        body.light-mode .markdown-content h3 {
+            color: #0f172a;
+        }
+        body.light-mode .markdown-content code,
+        body.light-mode .markdown-content pre {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1d4ed8;
+        }
     </style>
+    <script>
+        (function () {
+            const theme = localStorage.getItem('catalog-theme') || 'dark';
+            if (theme === 'light') {
+                document.documentElement.classList.add('light-mode-pending');
+            }
+        })();
+    </script>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
+    <script>
+        if (document.documentElement.classList.contains('light-mode-pending')) {
+            document.body.classList.add('light-mode');
+            document.documentElement.classList.remove('light-mode-pending');
+        }
+    </script>
 
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
@@ -152,6 +262,9 @@
                     <button class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:text-white transition">
                         <i class="fas fa-bell"></i>
                     </button>
+                    <button id="theme-toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:text-white transition" title="Ganti mode tampilan" aria-label="Ganti mode tampilan">
+                        <i id="theme-toggle-icon" class="fas fa-moon"></i>
+                    </button>
                 </div>
             </header>
 
@@ -174,5 +287,36 @@
     </div>
 
     {% block extra_js %}{% endblock %}
+    <script>
+        (function () {
+            const storageKey = 'catalog-theme';
+            const body = document.body;
+            const button = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-toggle-icon');
+
+            function applyTheme(theme) {
+                const isLight = theme === 'light';
+                body.classList.toggle('light-mode', isLight);
+                if (icon) {
+                    icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+                }
+                if (button) {
+                    button.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+                    button.setAttribute('title', isLight ? 'Ganti ke dark mode' : 'Ganti ke light mode');
+                }
+            }
+
+            const initialTheme = localStorage.getItem(storageKey) || 'dark';
+            applyTheme(initialTheme);
+
+            if (button) {
+                button.addEventListener('click', function () {
+                    const nextTheme = body.classList.contains('light-mode') ? 'dark' : 'light';
+                    localStorage.setItem(storageKey, nextTheme);
+                    applyTheme(nextTheme);
+                });
+            }
+        })();
+    </script>
 </body>
 </html>
