@@ -16,6 +16,7 @@ jobs:
         python-version: ["3.12", "3.13"]
 
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       SECRET_KEY: django-ci-secret-key
       DEBUG: "0"
       ALLOWED_HOSTS: localhost,127.0.0.1
