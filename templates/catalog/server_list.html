@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load catalog_tags %}
+
+{% block title %}Server | App Catalog{% endblock %}
+{% block header_title %}Manajemen Server{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <h2 class="text-xl font-bold flex items-center gap-2">
+        <i class="fas fa-server text-blue-500"></i> Daftar Server
+    </h2>
+    <a href="{% url 'server_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
+        <i class="fas fa-plus"></i> Tambah Server
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {% for server in servers %}
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden group">
+        <div class="p-6 border-b border-gray-700 bg-gray-800/50 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-blue-500/10 text-blue-500 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg group-hover:text-blue-400 transition-colors">{{ server.name }}</h3>
+                    <p class="text-xs text-gray-500 font-mono">{{ server.host_ip }}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'server_update' server.id %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-yellow-600 transition text-gray-400 hover:text-white"><i class="fas fa-edit text-xs"></i></a>
+                <a href="{% url 'server_delete' server.id %}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-red-600 transition text-gray-400 hover:text-white"><i class="fas fa-trash text-xs"></i></a>
+            </div>
+        </div>
+        <div class="p-6 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Provider</p>
+                <p class="text-sm font-semibold">{{ server.provider|default:"-" }}</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Location</p>
+                <p class="text-sm font-semibold">{{ server.location|default:"-" }}</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">OS</p>
+                <p class="text-sm font-semibold">{{ server.os|default:"-" }}</p>
+            </div>
+            <div class="col-span-full">
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Spesifikasi</p>
+                {% if server.specs %}
+                    <div class="markdown-content bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">
+                        {{ server.specs|markdownify }}
+                    </div>
+                {% else %}
+                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">Tidak ada info spesifikasi.</div>
+                {% endif %}
+            </div>
+            <div class="col-span-full">
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Deployment Notes</p>
+                {% if server.deployment_notes %}
+                    <div class="markdown-content bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">
+                        {{ server.deployment_notes|markdownify }}
+                    </div>
+                {% else %}
+                    <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 text-xs text-gray-300">Tidak ada catatan deployment.</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="px-6 py-4 bg-gray-900/30 border-t border-gray-700/50 flex justify-between items-center">
+            <span class="text-xs text-gray-500"><i class="fas fa-rocket mr-2"></i> {{ server.applications_count }} Aplikasi Berjalan</span>
+            <span class="text-xs text-gray-500"><i class="fas fa-user mr-2"></i> {{ server.username|default:"root" }}</span>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center">
+        <p class="text-gray-500">Belum ada server.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

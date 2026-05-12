@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load catalog_tags %}
+
+{% block title %}Dashboard | App Catalog{% endblock %}
+{% block header_title %}Control Center Overview{% endblock %}
+
+{% block content %}
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <!-- Total Apps -->
+    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center">
+                <i class="fas fa-rocket text-xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Total Aplikasi</p>
+                <h3 class="text-2xl font-bold">{{ total_apps }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Environment PROD -->
+    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl border-l-4 border-l-emerald-500">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center">
+                <i class="fas fa-globe text-xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Production</p>
+                <h3 class="text-2xl font-bold">{{ prod_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environment BETA -->
+    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl border-l-4 border-l-yellow-500">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-yellow-500/10 text-yellow-500 rounded-xl flex items-center justify-center">
+                <i class="fas fa-vial text-xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Beta / Test</p>
+                <h3 class="text-2xl font-bold">{{ beta_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Servers -->
+    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-purple-500/10 text-purple-500 rounded-xl flex items-center justify-center">
+                <i class="fas fa-server text-xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-bold tracking-wider">Total Server</p>
+                <h3 class="text-2xl font-bold">{{ total_servers }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header Apps -->
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-bold flex items-center gap-2">
+        <i class="fas fa-list-ul text-blue-500"></i> Daftar Aplikasi
+    </h2>
+    <div class="flex items-center gap-3">
+        <select class="bg-gray-800 border border-gray-700 rounded-lg py-1.5 px-3 text-sm text-gray-300 focus:outline-none">
+            <option>Semua Kategori</option>
+        </select>
+        <a href="{% url 'application_create' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
+            <i class="fas fa-plus"></i> Tambah App
+        </a>
+    </div>
+</div>
+
+<!-- Applications Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for app in apps %}
+    <div id="card-{{ app.id }}" class="card bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl group">
+        <div class="flex justify-between items-start mb-6">
+            <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center border border-gray-700/50 p-2 overflow-hidden">
+                {% if app.logo_url %}
+                    <img src="{{ app.logo_url }}" alt="{{ app.name }}" class="max-w-full max-h-full object-contain">
+                {% elif app.logo_image %}
+                    <img src="{{ app.logo_image.url }}" alt="{{ app.name }}" class="max-w-full max-h-full object-contain">
+                {% else %}
+                    <i class="fas {{ app.category.icon|default:'fa-cube' }} text-2xl text-gray-600"></i>
+                {% endif %}
+            </div>
+            <div class="flex flex-col items-end">
+                <span id="dot-{{ app.id }}" class="status-dot h-3 w-3 bg-gray-600 rounded-full" data-status-url="{% url 'application_status' app.id %}"></span>
+                <span id="text-{{ app.id }}" class="text-[10px] uppercase mt-1 text-gray-500 font-bold">Checking</span>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            {% with env=app.highest_environment %}
+            <div class="flex items-center gap-2 mb-1">
+                <h3 class="text-xl font-bold group-hover:text-blue-400 transition-colors">{{ app.name }}</h3>
+                {% if env.environment == 'PROD' %}
+                    <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-md">PROD</span>
+                {% elif env.environment == 'BETA' %}
+                    <span class="px-2 py-0.5 text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 rounded-md">BETA</span>
+                {% elif env.environment == 'DEV' %}
+                    <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-md">DEV</span>
+                {% else %}
+                    <span class="px-2 py-0.5 text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20 rounded-md">-</span>
+                {% endif %}
+            </div>
+            {% if app.description %}
+                <div class="markdown-content text-gray-400 text-sm line-clamp-2 min-h-[2.5rem]">{{ app.description|markdownify }}</div>
+            {% else %}
+                <p class="text-gray-400 text-sm line-clamp-2 min-h-[2.5rem]">Tidak ada deskripsi.</p>
+            {% endif %}
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-gray-900/50 p-2 rounded-lg border border-gray-700/50">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-0.5">Category</p>
+                <p class="text-xs font-semibold">{{ app.category.name|default:"General" }}</p>
+            </div>
+            <div class="bg-gray-900/50 p-2 rounded-lg border border-gray-700/50">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-0.5">Framework</p>
+                <p class="text-xs font-semibold">{{ app.framework|default:"-" }}</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="{% url 'application_detail' app.slug %}" class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold py-2.5 rounded-lg transition">
+                Detail
+            </a>
+            <a href="{{ env.url|default:'#' }}" target="_blank" class="flex-1 text-center {% if env.environment == 'PROD' %}bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20{% elif env.environment == 'BETA' %}bg-yellow-600 hover:bg-yellow-500 shadow-yellow-600/20{% else %}bg-blue-600 hover:bg-blue-500 shadow-blue-600/20{% endif %} text-white text-xs font-bold py-2.5 rounded-lg transition shadow-lg">
+                Open Console <i class="fas fa-external-link-alt ml-1 text-[10px]"></i>
+            </a>
+        </div>
+        
+        <div class="mt-4 pt-4 border-t border-gray-700/50 flex justify-between items-center">
+            <p class="text-[10px] font-mono text-gray-500">IP: {{ env.local_ip|default:"-" }}:{{ env.port|default:"-" }}</p>
+            <p class="text-[10px] font-mono text-gray-500">DB: {{ app.database|default:"-" }}</p>
+        </div>
+        {% endwith %}
+    </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center">
+        <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
+            <i class="fas fa-folder-open text-gray-600 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-gray-400">Belum ada aplikasi</h3>
+        <p class="text-gray-500 mb-6">Mulai tambahkan aplikasi pertama Anda sekarang.</p>
+        <a href="{% url 'application_create' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg transition">
+            <i class="fas fa-plus"></i> Tambah Aplikasi
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    async function checkStatus(appId, statusUrl) {
+        const dot = document.getElementById(`dot-${appId}`);
+        const text = document.getElementById(`text-${appId}`);
+        const card = document.getElementById(`card-${appId}`);
+
+        if (!statusUrl) {
+            dot.className = "status-dot h-3 w-3 bg-gray-600 rounded-full";
+            text.innerText = "No URL";
+            return;
+        }
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+        try {
+            const response = await fetch(statusUrl, {
+                signal: controller.signal,
+                cache: 'no-cache',
+                headers: { 'Accept': 'application/json' },
+            });
+            const result = await response.json();
+
+            if (result.online) {
+                dot.className = "status-dot h-3 w-3 bg-green-500 rounded-full online-pulse";
+                text.innerText = "Online";
+                text.className = "text-[10px] uppercase mt-1 text-green-500 font-bold";
+                card.classList.remove('opacity-60');
+            } else {
+                dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
+                text.innerText = "Offline";
+                text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
+                card.classList.add('opacity-60');
+            }
+            clearTimeout(timeoutId);
+
+        } catch (err) {
+            dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
+            text.innerText = "Offline";
+            text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
+            card.classList.add('opacity-60');
+        }
+    }
+
+    function runChecks() {
+        const dots = document.querySelectorAll('.status-dot');
+        dots.forEach(dot => {
+            const appId = dot.id.replace('dot-', '');
+            const statusUrl = dot.getAttribute('data-status-url');
+            checkStatus(appId, statusUrl);
+        });
+    }
+
+    // Initial check
+    runChecks();
+    // Re-check every 30 seconds
+    setInterval(runChecks, 30000);
+</script>
+{% endblock %}

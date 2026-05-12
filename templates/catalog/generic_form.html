@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load catalog_tags %}
+
+{% block title %}{{ view.model|verbose_name }} | App Catalog{% endblock %}
+{% block header_title %}
+    {% if object %}Edit {{ object.name }}{% else %}Tambah {{ view.model|verbose_name }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
+        <div class="p-8 border-b border-gray-700 bg-gray-800/50">
+            <h2 class="text-xl font-bold">Informasi {{ view.model|verbose_name }}</h2>
+            <p class="text-gray-400 text-sm mt-1">Lengkapi detail data, field catatan mendukung Markdown.</p>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for field in form %}
+                <div class="flex flex-col gap-2 {% if field.name == 'description' or field.name == 'maintenance_notes' or field.name == 'deployment_notes' or field.name == 'specs' or field.name == 'access_notes' or field.name == 'notes' %}md:col-span-2{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="text-sm font-bold text-gray-400">
+                        {{ field.label }}
+                        {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+                    
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <div class="flex items-center gap-2 mt-2">
+                            {{ field }}
+                            <span class="text-sm text-gray-300">{{ field.help_text }}</span>
+                        </div>
+                    {% elif field.name == 'description' or field.name == 'maintenance_notes' or field.name == 'deployment_notes' or field.name == 'specs' or field.name == 'access_notes' or field.name == 'notes' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="6" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">{{ field.value|default:"" }}</textarea>
+                        <p class="text-[10px] text-blue-300">
+                            Mendukung Markdown: **tebal**, - list, `kode`, dan blok kode.
+                        </p>
+                    {% else %}
+                        <div class="relative">
+                            {% if field.name == 'url' or field.name == 'repository' %}
+                                <i class="fas fa-link absolute left-4 top-3.5 text-gray-600 text-xs"></i>
+                                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:"" }}" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 pl-10 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all w-full">
+                            {% elif 'select' in field.field.widget.template_name %}
+                                <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all w-full appearance-none">
+                                    {% for choice in field.field.choices %}
+                                        <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-4 text-gray-600 text-xs pointer-events-none"></i>
+                            {% else %}
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:"" }}" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all w-full">
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    {% if field.help_text and field.field.widget.input_type != 'checkbox' %}
+                        <p class="text-[10px] text-gray-500 italic">{{ field.help_text }}</p>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p class="text-xs text-red-500 font-semibold">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pt-6 border-t border-gray-700 flex items-center justify-end gap-4">
+                <button type="button" onclick="history.back()" class="text-gray-400 hover:text-white font-bold text-sm px-6 py-3 transition">
+                    Batal
+                </button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-10 py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

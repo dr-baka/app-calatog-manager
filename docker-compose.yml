@@ -1,0 +1,38 @@
+services:
+  # db:
+  #   image: postgres:15-alpine
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     - POSTGRES_DB=appcatalog
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d appcatalog"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate && 
+             python manage.py seed_data && 
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8081:8000"
+    environment:
+      # - DATABASE_URL=postgres://postgres:postgres@db:5432/appcatalog
+      - SECRET_KEY=django-insecure-local-docker-change-me
+      - DEBUG=1
+      # - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      # - CSRF_TRUSTED_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
+      - ADMIN_PATH=admin/
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+
+volumes:
+#   postgres_data:

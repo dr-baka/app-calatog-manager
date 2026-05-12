@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Hapus Environment | App Catalog{% endblock %}
+{% block header_title %}Hapus Environment{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-8">
+    <h2 class="text-xl font-bold mb-3">Hapus environment {{ object.environment }}?</h2>
+    <p class="text-sm text-gray-400 mb-8">
+        Konfigurasi environment untuk {{ object.application.name }} akan dihapus.
+    </p>
+
+    <form method="post" class="flex items-center justify-end gap-4">
+        {% csrf_token %}
+        <button type="button" onclick="history.back()" class="text-gray-400 hover:text-white font-bold text-sm px-6 py-3 transition">
+            Batal
+        </button>
+        <button type="submit" class="bg-red-600 hover:bg-red-500 text-white font-bold text-sm px-8 py-3 rounded-xl transition">
+            Hapus
+        </button>
+    </form>
+</div>
+{% endblock %}

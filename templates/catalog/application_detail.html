@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load catalog_tags %}
+
+{% block title %}{{ app.name }} | Detail Aplikasi{% endblock %}
+{% block header_title %}Detail Aplikasi: {{ app.name }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column: Main Info -->
+    <div class="lg:col-span-2 space-y-8">
+        <!-- Header Card -->
+        <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
+            <div class="h-32 bg-gradient-to-r from-blue-600/20 to-emerald-600/20 border-b border-gray-700 flex items-end p-8">
+                <div class="flex items-center gap-6 translate-y-12">
+                    <div class="w-24 h-24 bg-gray-900 rounded-2xl border-4 border-gray-800 shadow-2xl flex items-center justify-center p-4 overflow-hidden">
+                        {% if app.logo_url %}
+                            <img src="{{ app.logo_url }}" class="max-w-full max-h-full object-contain">
+                        {% elif app.logo_image %}
+                            <img src="{{ app.logo_image.url }}" class="max-w-full max-h-full object-contain">
+                        {% else %}
+                            <i class="fas {{ app.category.icon|default:'fa-cube' }} text-4xl text-gray-700"></i>
+                        {% endif %}
+                    </div>
+                    <div class="pb-2">
+                        <h2 class="text-3xl font-extrabold">{{ app.name }}</h2>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-gray-400 text-sm font-medium">{{ app.category.name|default:"Uncategorized" }}</span>
+                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                            <span class="text-blue-400 text-sm font-bold">{{ app.highest_environment_label }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-20 p-8">
+                {% if app.description %}
+                    <div class="markdown-content text-gray-300">{{ app.description|markdownify }}</div>
+                {% else %}
+                    <p class="text-gray-300 leading-relaxed">Tidak ada deskripsi tersedia untuk aplikasi ini.</p>
+                {% endif %}
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+                    <div class="p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Framework</p>
+                        <p class="text-sm font-bold">{{ app.framework|default:"-" }}</p>
+                    </div>
+                    <div class="p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Database</p>
+                        <p class="text-sm font-bold">{{ app.database|default:"-" }}</p>
+                    </div>
+                    {% with env=app.highest_environment %}
+                        <div class="p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Environment</p>
+                            <p class="text-sm font-bold">{{ env.environment|default:"-" }}</p>
+                        </div>
+                        <div class="p-4 bg-gray-900/50 rounded-xl border border-gray-700/50">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Status</p>
+                            <div class="flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full {% if env.is_active %}bg-green-500 online-pulse{% else %}bg-red-500{% endif %}"></span>
+                                <p class="text-sm font-bold">{% if env.is_active %}Aktif{% else %}Nonaktif{% endif %}</p>
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Environments -->
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-lg font-bold flex items-center gap-3">
+                    <i class="fas fa-network-wired text-emerald-500"></i> Environment Server
+                </h3>
+                <a href="{% url 'application_environment_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Environment</a>
+            </div>
+            <div class="space-y-5">
+                {% for env in app.ordered_environments %}
+                <div class="rounded-xl border border-gray-700/50 bg-gray-900/30 p-5">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                {% if env.environment == 'PROD' %}
+                                    <span class="px-2 py-1 text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-md">PROD</span>
+                                {% elif env.environment == 'BETA' %}
+                                    <span class="px-2 py-1 text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 rounded-md">BETA</span>
+                                {% else %}
+                                    <span class="px-2 py-1 text-[10px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-md">DEV</span>
+                                {% endif %}
+                                <span class="text-xs text-gray-400">{% if env.is_active %}Aktif{% else %}Nonaktif{% endif %}</span>
+                            </div>
+                            <p class="text-sm font-bold text-gray-200">{{ env.server.name|default:"Belum terhubung ke server" }}</p>
+                            <p class="text-xs text-gray-500 font-mono mt-1">{{ env.url|default:"-" }}</p>
+                            <p class="text-xs text-gray-500 font-mono mt-1">{{ env.local_ip|default:"-" }}:{{ env.port|default:"-" }}</p>
+                        </div>
+                        <div class="flex gap-3">
+                            {% if env.url %}
+                            <a href="{{ env.url }}" target="_blank" class="text-xs font-bold text-blue-400 hover:text-blue-300">Buka</a>
+                            {% endif %}
+                            <a href="{% url 'application_environment_update' env.pk %}" class="text-xs font-bold text-gray-500 hover:text-yellow-400">Edit</a>
+                            <a href="{% url 'application_environment_delete' env.pk %}" class="text-xs font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                        </div>
+                    </div>
+                    {% if env.server %}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 border-t border-gray-700/50 pt-5">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Public IP / Host</p>
+                            <p class="text-xs font-mono text-blue-400">{{ env.server.host_ip }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">OS</p>
+                            <p class="text-xs text-gray-300">{{ env.server.os|default:"-" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Provider</p>
+                            <p class="text-xs text-gray-300">{{ env.server.provider|default:"-" }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if env.deployment_notes %}
+                    <div class="markdown-content mt-5 text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">
+                        {{ env.deployment_notes|markdownify }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-center text-gray-500 text-sm py-4">Belum ada environment untuk aplikasi ini.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Deployment & Maintenance -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-tools text-blue-500"></i> Deployment Notes
+                </h3>
+                {% if app.deployment_notes %}
+                    <div class="markdown-content text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">
+                        {{ app.deployment_notes|markdownify }}
+                    </div>
+                {% else %}
+                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">Belum ada catatan deployment.</div>
+                {% endif %}
+            </div>
+            <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-exclamation-triangle text-yellow-500"></i> Maintenance
+                </h3>
+                {% if app.maintenance_notes %}
+                    <div class="markdown-content text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">
+                        {{ app.maintenance_notes|markdownify }}
+                    </div>
+                {% else %}
+                    <div class="text-sm text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-700/50">Tidak ada catatan maintenance aktif.</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Update History -->
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-lg font-bold flex items-center gap-3">
+                    <i class="fas fa-history text-purple-500"></i> Riwayat Update
+                </h3>
+                <a href="{% url 'update_history_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Log</a>
+            </div>
+            <div class="space-y-6">
+                {% for update in app.history.all %}
+                <div class="relative pl-8 border-l-2 border-gray-700 pb-2">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 bg-gray-800 border-2 border-blue-500 rounded-full"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-sm font-bold">{{ update.version|default:"Update" }}</p>
+                        <p class="text-[10px] text-gray-500">{{ update.date|date:"d M Y" }}</p>
+                    </div>
+                    <div class="markdown-content text-xs text-gray-400">{{ update.notes|markdownify }}</div>
+                    <div class="flex gap-3 mt-3">
+                        <a href="{% url 'update_history_update' update.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-yellow-400">Edit</a>
+                        <a href="{% url 'update_history_delete' update.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-gray-500 text-sm py-4">Belum ada riwayat update.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Sidebar Info -->
+    <div class="space-y-8">
+        <!-- Action Card -->
+        <div class="bg-blue-600 p-8 rounded-2xl shadow-2xl shadow-blue-600/20 text-white">
+            {% with env=app.highest_environment %}
+            <h3 class="font-bold text-lg mb-4">Akses Cepat</h3>
+            <div class="space-y-3">
+                <a href="{{ env.url|default:'#' }}" target="_blank" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-xl transition-all border border-white/10">
+                    <span class="font-bold">Buka Aplikasi</span>
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                <a href="{{ app.repository }}" target="_blank" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-xl transition-all border border-white/10">
+                    <span class="font-bold">Repositori Git</span>
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <div class="mt-6 flex gap-3">
+                <a href="{% url 'application_update' app.slug %}" class="flex-1 text-center bg-white text-blue-600 font-bold py-3 rounded-xl hover:bg-gray-100 transition">Edit Data</a>
+            </div>
+            {% endwith %}
+        </div>
+
+        <!-- Admin Contact -->
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl">
+            <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-user-shield text-orange-500"></i> Admin Aplikasi
+            </h3>
+            <div class="mb-6">
+                <a href="{% url 'app_admin_create' app.slug %}" class="text-xs font-bold text-blue-400 hover:text-blue-300">Tambah Admin</a>
+            </div>
+            <div class="space-y-6">
+                {% for admin in app.admins.all %}
+                <div class="rounded-xl border border-gray-700/50 bg-gray-900/30 p-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center font-bold text-xs">
+                            {{ admin.name|slice:":2"|upper }}
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold">{{ admin.name }}</p>
+                            <p class="text-[10px] text-gray-500">{{ admin.role|default:"Admin" }}</p>
+                            <p class="text-[10px] text-gray-500">{{ admin.email }}</p>
+                        </div>
+                        {% if admin.whatsapp %}
+                        <a href="https://wa.me/{{ admin.whatsapp }}" target="_blank" class="text-emerald-500 hover:text-emerald-400">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if admin.access_notes %}
+                        <div class="markdown-content mt-4 text-xs text-gray-400">{{ admin.access_notes|markdownify }}</div>
+                    {% endif %}
+                    <div class="mt-4 flex gap-3 border-t border-gray-700/50 pt-3">
+                        <a href="{% url 'app_admin_update' admin.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-yellow-400">Edit</a>
+                        <a href="{% url 'app_admin_delete' admin.pk %}" class="text-[10px] font-bold text-gray-500 hover:text-red-400">Hapus</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-sm text-gray-500">Belum ada admin terdaftar.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
