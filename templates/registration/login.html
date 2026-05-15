@@ -84,6 +84,10 @@
         body.light-mode .brand-text {
             background-image: linear-gradient(to right, #1d4ed8, #059669) !important;
         }
+        .theme-logo-light { display: none; }
+        .theme-logo-dark { display: block; }
+        body.light-mode .theme-logo-light { display: block; }
+        body.light-mode .theme-logo-dark { display: none; }
         body.light-mode .shadow-2xl,
         body.light-mode .shadow-lg {
             box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
@@ -105,36 +109,29 @@
         }
     </script>
     <main class="min-h-screen grid lg:grid-cols-[1.1fr_0.9fr]">
-        <section class="login-hero hidden lg:flex flex-col justify-between border-r border-gray-800 bg-gray-950 px-12 py-10">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
-                    <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
+        <section class="login-hero hidden lg:flex flex-col justify-center border-r border-gray-800 bg-gray-950 px-12 py-10">
+            <div class="max-w-3xl">
+                <div class="flex items-center gap-10">
+                    <div class="h-40 w-40 shrink-0 rounded-[2rem] overflow-hidden">
+                        <img src="{% static 'img/logo-dark.png' %}" alt="AppCatalog" class="theme-logo-dark w-full h-full object-contain">
+                        <img src="{% static 'img/logo-light.png' %}" alt="AppCatalog" class="theme-logo-light w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">Catalog Manager</p>
+                        <h1 class="text-5xl font-bold leading-tight text-white">
+                            {% lang "Kelola aplikasi, server, dan kategori dari satu tempat." "Manage applications, servers, and categories from one place." %}
+                        </h1>
+                        <p class="mt-6 text-base leading-7 text-gray-400">
+                            {% lang "Masuk untuk melihat dashboard operasional dan memperbarui data katalog aplikasi internal." "Sign in to view the operational dashboard and update the internal application catalog." %}
+                        </p>
+                    </div>
                 </div>
-                <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent">AppCatalog</span>
             </div>
 
-            <div class="max-w-xl">
-                <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">Catalog Manager</p>
-                <h1 class="text-5xl font-bold leading-tight text-white">
-                    {% lang "Kelola aplikasi, server, dan kategori dari satu tempat." "Manage applications, servers, and categories from one place." %}
-                </h1>
-                <p class="mt-6 text-base leading-7 text-gray-400">
-                    {% lang "Masuk untuk melihat dashboard operasional dan memperbarui data katalog aplikasi internal." "Sign in to view the operational dashboard and update the internal application catalog." %}
-                </p>
-            </div>
-
-            <p class="text-xs text-gray-600">&copy; 2026 App Catalog Manager</p>
         </section>
 
         <section class="login-main flex items-center justify-center px-6 py-12">
             <div class="w-full max-w-md">
-                <div class="mb-10 flex items-center gap-3 lg:hidden">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
-                        <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
-                    </div>
-                    <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent">AppCatalog</span>
-                </div>
-
                 <div class="mb-4 flex justify-end gap-3">
                     <form action="{% url 'set_language' %}" method="post" class="flex items-center rounded-full border border-gray-700 bg-gray-800 p-1">
                         {% csrf_token %}

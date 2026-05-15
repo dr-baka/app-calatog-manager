@@ -2,17 +2,20 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.db.models import Count
 from django.db.models import Prefetch
 from urllib.parse import urlparse
+import json
+import time
 import requests
 import urllib3
 from .models import Application, ApplicationEnvironment, AppAdmin, UpdateHistory
 from categories.models import Category
 from servers.models import Server
+from servers.models import ServerAgentMonitor
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -23,6 +26,7 @@ def dashboard(request):
     )
     categories_count = Category.objects.count()
     servers_count = Server.objects.count()
+    server_agent_monitors = ServerAgentMonitor.objects.select_related('server').order_by('server__name')
     
     # Environment stats
     env_stats = ApplicationEnvironment.objects.values('environment').annotate(count=Count('application', distinct=True))
@@ -33,6 +37,7 @@ def dashboard(request):
         'total_apps': apps.count(),
         'total_categories': categories_count,
         'total_servers': servers_count,
+        'server_agent_monitors': server_agent_monitors,
         'dev_count': env_map.get('DEV', 0),
         'beta_count': env_map.get('BETA', 0),
         'prod_count': env_map.get('PROD', 0),
@@ -46,14 +51,23 @@ def application_status(request, pk):
     environment = application.highest_environment
 
     if not environment:
-        return JsonResponse({
-            'online': False,
-            'status': 'offline',
-            'checked_url': None,
-            'checked_urls': [],
-        })
+        return JsonResponse(empty_status_payload(application))
 
     return environment_status_response(environment)
+
+
+@login_required
+def application_status_stream(request):
+    def event_stream():
+        while True:
+            payload = build_application_status_payload()
+            yield f"data: {json.dumps(payload)}\n\n"
+            time.sleep(30)
+
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'
+    return response
 
 
 @login_required
@@ -63,21 +77,56 @@ def application_environment_status(request, pk):
 
 
 def environment_status_response(environment):
+    return JsonResponse(check_environment_status(environment))
+
+
+def build_application_status_payload():
+    applications = Application.objects.prefetch_related(
+        Prefetch('environments', queryset=ApplicationEnvironment.objects.select_related('server'))
+    )
+    payload = []
+
+    for application in applications:
+        environment = application.highest_environment
+        if environment:
+            item = check_environment_status(environment)
+            item['app_id'] = application.pk
+            item['environment'] = environment.environment
+        else:
+            item = empty_status_payload(application)
+        payload.append(item)
+
+    return payload
+
+
+def empty_status_payload(application):
+    return {
+        'app_id': application.pk,
+        'online': False,
+        'status': 'offline',
+        'checked_url': None,
+        'checked_urls': [],
+        'environment': None,
+    }
+
+
+def check_environment_status(environment):
     endpoints = build_status_endpoints(environment)
     for endpoint in endpoints:
         if is_endpoint_online(endpoint):
-            return JsonResponse({
+            return {
                 'online': True,
                 'status': 'online',
                 'checked_url': endpoint,
-            })
+                'checked_urls': endpoints,
+            }
 
-    return JsonResponse({
+    return {
         'online': False,
         'status': 'offline',
         'checked_url': None,
         'checked_urls': endpoints,
-    })
+    }
 
 
 def build_status_endpoints(environment):

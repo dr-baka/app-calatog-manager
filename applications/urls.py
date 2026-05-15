@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.ApplicationListView.as_view(), name='application_list'),
     path('create/', views.ApplicationCreateView.as_view(), name='application_create'),
+    path('status/stream/', views.application_status_stream, name='application_status_stream'),
     path('<int:pk>/status/', views.application_status, name='application_status'),
     path('environments/<int:pk>/status/', views.application_environment_status, name='application_environment_status'),
     path('<slug:slug>/environments/create/', views.ApplicationEnvironmentCreateView.as_view(), name='application_environment_create'),

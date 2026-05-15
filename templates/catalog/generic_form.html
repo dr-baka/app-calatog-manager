@@ -6,6 +6,151 @@
     {% if object %}{% lang "Edit" "Edit" %} {{ object.name }}{% else %}{% lang "Tambah" "Add" %} {{ view.model|verbose_name }}{% endif %}
 {% endblock %}
 
+{% block extra_head %}
+{{ block.super }}
+<style>
+    .markdown-editor,
+    .catalog-markdown-editor,
+    .catalog-markdown-editor textarea,
+    .catalog-markdown-editor [contenteditable="true"],
+    .catalog-markdown-editor .editor,
+    .catalog-markdown-editor .mte-editor,
+    .markdown-text-editor,
+    .markdown-text-editor textarea,
+    .markdown-text-editor [contenteditable="true"],
+    .markdown-text-editor .editor,
+    .markdown-text-editor .mte-editor {
+        background-color: #111827 !important;
+        border-color: #374151 !important;
+        color: #f9fafb !important;
+    }
+    .markdown-text-editor {
+        border-radius: 0.75rem !important;
+        overflow: hidden;
+    }
+    .markdown-text-editor textarea,
+    .markdown-text-editor [contenteditable="true"],
+    .markdown-text-editor .editor,
+    .markdown-text-editor .mte-editor {
+        min-height: 10rem;
+        outline: none !important;
+    }
+    .markdown-text-editor textarea::placeholder {
+        color: #6b7280 !important;
+    }
+    .catalog-markdown-editor .toolbar,
+    .catalog-markdown-editor .mte-toolbar,
+    .catalog-markdown-editor .editor-toolbar,
+    .catalog-markdown-editor .editor-footer,
+    .catalog-markdown-editor [class*="toolbar"],
+    .catalog-markdown-editor [class*="footer"],
+    .markdown-text-editor .toolbar,
+    .markdown-text-editor .mte-toolbar,
+    .markdown-text-editor .editor-toolbar,
+    .markdown-text-editor .editor-footer,
+    .markdown-text-editor [class*="toolbar"],
+    .markdown-text-editor [class*="footer"],
+    .toolbar:has(+ .markdown-editor),
+    .editor-footer {
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+    .catalog-markdown-editor .editor-footer *,
+    .catalog-markdown-editor .toolbar *,
+    .markdown-text-editor .editor-footer *,
+    .markdown-text-editor .toolbar *,
+    .editor-footer * {
+        color: #d1d5db !important;
+    }
+    .catalog-markdown-editor button,
+    .catalog-markdown-editor [role="button"],
+    .markdown-text-editor button,
+    .markdown-text-editor [role="button"] {
+        background-color: transparent !important;
+        color: #d1d5db !important;
+    }
+    .catalog-markdown-editor button:hover,
+    .catalog-markdown-editor [role="button"]:hover,
+    .markdown-text-editor button:hover,
+    .markdown-text-editor [role="button"]:hover {
+        background-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    .catalog-markdown-editor .preview,
+    .catalog-markdown-editor .mte-preview,
+    .catalog-markdown-editor [class*="preview"],
+    .markdown-text-editor .preview,
+    .markdown-text-editor .mte-preview,
+    .markdown-text-editor [class*="preview"] {
+        background-color: #111827 !important;
+        color: #e5e7eb !important;
+    }
+    body.light-mode .markdown-editor,
+    body.light-mode .catalog-markdown-editor,
+    body.light-mode .catalog-markdown-editor textarea,
+    body.light-mode .catalog-markdown-editor [contenteditable="true"],
+    body.light-mode .catalog-markdown-editor .editor,
+    body.light-mode .catalog-markdown-editor .mte-editor,
+    body.light-mode .markdown-text-editor,
+    body.light-mode .markdown-text-editor textarea,
+    body.light-mode .markdown-text-editor [contenteditable="true"],
+    body.light-mode .markdown-text-editor .editor,
+    body.light-mode .markdown-text-editor .mte-editor {
+        background-color: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+    }
+    body.light-mode .catalog-markdown-editor .toolbar,
+    body.light-mode .catalog-markdown-editor .mte-toolbar,
+    body.light-mode .catalog-markdown-editor .editor-toolbar,
+    body.light-mode .catalog-markdown-editor .editor-footer,
+    body.light-mode .catalog-markdown-editor [class*="toolbar"],
+    body.light-mode .catalog-markdown-editor [class*="footer"],
+    body.light-mode .markdown-text-editor .toolbar,
+    body.light-mode .markdown-text-editor .mte-toolbar,
+    body.light-mode .markdown-text-editor .editor-toolbar,
+    body.light-mode .markdown-text-editor .editor-footer,
+    body.light-mode .markdown-text-editor [class*="toolbar"],
+    body.light-mode .markdown-text-editor [class*="footer"],
+    body.light-mode .toolbar:has(+ .markdown-editor),
+    body.light-mode .editor-footer {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #334155 !important;
+    }
+    body.light-mode .catalog-markdown-editor .editor-footer *,
+    body.light-mode .catalog-markdown-editor .toolbar *,
+    body.light-mode .markdown-text-editor .editor-footer *,
+    body.light-mode .markdown-text-editor .toolbar *,
+    body.light-mode .editor-footer * {
+        color: #334155 !important;
+    }
+    body.light-mode .catalog-markdown-editor button,
+    body.light-mode .catalog-markdown-editor [role="button"],
+    body.light-mode .markdown-text-editor button,
+    body.light-mode .markdown-text-editor [role="button"] {
+        color: #334155 !important;
+    }
+    body.light-mode .catalog-markdown-editor button:hover,
+    body.light-mode .catalog-markdown-editor [role="button"]:hover,
+    body.light-mode .markdown-text-editor button:hover,
+    body.light-mode .markdown-text-editor [role="button"]:hover {
+        background-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+    body.light-mode .catalog-markdown-editor .preview,
+    body.light-mode .catalog-markdown-editor .mte-preview,
+    body.light-mode .catalog-markdown-editor [class*="preview"],
+    body.light-mode .markdown-text-editor .preview,
+    body.light-mode .markdown-text-editor .mte-preview,
+    body.light-mode .markdown-text-editor [class*="preview"] {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
@@ -16,6 +161,14 @@
         
         <form method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
             {% csrf_token %}
+            {% if show_agent_monitor_modal %}
+            <div class="flex justify-end">
+                <button type="button" id="open-agent-modal" class="inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-400 hover:bg-emerald-500/20 transition">
+                    <i class="fas fa-satellite-dish"></i>
+                    {% lang "Tambah Agent Monitor" "Add Agent Monitor" %}
+                </button>
+            </div>
+            {% endif %}
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {% for field in form %}
@@ -31,7 +184,7 @@
                             <span class="text-sm text-gray-300">{{ field.help_text }}</span>
                         </div>
                     {% elif field.name == 'description' or field.name == 'maintenance_notes' or field.name == 'deployment_notes' or field.name == 'specs' or field.name == 'access_notes' or field.name == 'notes' %}
-                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="6" class="bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">{{ field.value|default:"" }}</textarea>
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="6" class="markdown-editor bg-gray-900 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">{{ field.value|default:"" }}</textarea>
                         <p class="text-[10px] text-blue-300">
                             {% lang "Mendukung Markdown: **tebal**, - list, `kode`, dan blok kode." "Supports Markdown: **bold**, - list, `code`, and code blocks." %}
                         </p>
@@ -74,7 +227,200 @@
                     {% lang "Simpan Perubahan" "Save Changes" %}
                 </button>
             </div>
+
+            {% if show_agent_monitor_modal %}
+            <div id="agent-monitor-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 px-4">
+                <div class="w-full max-w-2xl rounded-2xl border border-gray-700 bg-gray-800 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-gray-700 p-6">
+                        <div>
+                            <h3 class="text-lg font-bold">{% lang "Agent Monitor Server" "Server Agent Monitor" %}</h3>
+                            <p class="mt-1 text-sm text-gray-400">{% lang "Tambahkan endpoint agent monitor untuk server ini." "Add the agent monitor endpoint for this server." %}</p>
+                        </div>
+                        <button type="button" id="close-agent-modal" class="h-9 w-9 rounded-full bg-gray-700 text-gray-300 hover:text-white">
+                            <i class="fas fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-5 p-6">
+                        <div>
+                            <label for="agent_url" class="mb-2 block text-sm font-bold text-gray-400">Agent URL</label>
+                            <input type="url" name="agent_url" id="agent_url" value="{{ agent_monitor.agent_url|default:'' }}" placeholder="http://10.0.0.1:9000/metrics" class="w-full rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                        </div>
+                        <div>
+                            <label for="agent_auth_key" class="mb-2 block text-sm font-bold text-gray-400">Agent Auth Key</label>
+                            <input type="text" name="agent_auth_key" id="agent_auth_key" value="{{ agent_monitor.agent_auth_key|default:'' }}" placeholder="my-secret-token" class="w-full rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                        </div>
+                        <details class="rounded-xl border border-blue-500/20 bg-blue-500/10 p-4">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-blue-300">
+                                <span>{% lang "Hint install agent" "Agent install hint" %}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </summary>
+                            <div class="mt-5 max-h-96 space-y-5 overflow-auto pr-1 text-sm text-gray-300">
+                                <section class="space-y-3">
+                                    <h4 class="font-bold text-white">{% lang "Instalasi VM Monitor Agent via SSH" "Install VM Monitor Agent via SSH" %}</h4>
+                                    <div class="space-y-2">
+                                        <h5 class="font-semibold text-blue-200">1. {% lang "SSH ke Server" "SSH to the Server" %}</h5>
+                                        <p>{% lang "Login ke server tujuan menggunakan SSH:" "Log in to the target server using SSH:" %}</p>
+                                        <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                            <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                                <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                                <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-ssh">{% lang "Copy" "Copy" %}</button>
+                                            </div>
+                                            <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-ssh">ssh user@ip-server</code></pre>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">2. {% lang "Install VM Monitor Agent" "Install VM Monitor Agent" %}</h5>
+                                    <p>{% lang "Jalankan perintah berikut untuk menginstall monitor agent:" "Run the following command to install the monitor agent:" %}</p>
+                                    <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                        <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                            <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                            <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-install">{% lang "Copy" "Copy" %}</button>
+                                        </div>
+                                        <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-install">wget -qO- https://gitlab.com/dayattt/vm-monitor-agent/-/raw/main/setup.sh | \
+PORT=9000 AUTH_TOKEN="my-secret-token" ENABLE_GPU=auto bash</code></pre>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">3. {% lang "Penjelasan Parameter" "Parameter Explanation" %}</h5>
+                                    <div class="overflow-x-auto rounded-lg border border-gray-700">
+                                        <table class="w-full text-left text-xs">
+                                            <thead class="bg-gray-900 text-gray-400">
+                                                <tr>
+                                                    <th class="px-3 py-2 font-bold">{% lang "Parameter" "Parameter" %}</th>
+                                                    <th class="px-3 py-2 font-bold">{% lang "Keterangan" "Description" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-700">
+                                                <tr>
+                                                    <td class="px-3 py-2 font-mono text-blue-200">PORT=9000</td>
+                                                    <td class="px-3 py-2">{% lang "Port yang digunakan agent" "Port used by the agent" %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-3 py-2 font-mono text-blue-200">AUTH_TOKEN="my-secret-token"</td>
+                                                    <td class="px-3 py-2">{% lang "Token autentikasi agent" "Agent authentication token" %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="px-3 py-2 font-mono text-blue-200">ENABLE_GPU=auto</td>
+                                                    <td class="px-3 py-2">{% lang "Otomatis mendeteksi dan mengaktifkan monitoring GPU jika tersedia" "Automatically detects and enables GPU monitoring when available" %}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">4. {% lang "Verifikasi Service" "Verify the Service" %}</h5>
+                                    <p>{% lang "Cek apakah service berhasil berjalan:" "Check whether the service is running successfully:" %}</p>
+                                    <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                        <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                            <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                            <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-service">{% lang "Copy" "Copy" %}</button>
+                                        </div>
+                                        <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-service">systemctl status vm-monitor-agent</code></pre>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">5. {% lang "Verifikasi Port" "Verify the Port" %}</h5>
+                                    <p>{% lang "Pastikan port monitoring sudah aktif:" "Make sure the monitoring port is active:" %}</p>
+                                    <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                        <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                            <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                            <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-port">{% lang "Copy" "Copy" %}</button>
+                                        </div>
+                                        <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-port">ss -tulpn | grep 9000</code></pre>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">6. {% lang "Konfigurasi Firewall (Opsional)" "Firewall Configuration (Optional)" %}</h5>
+                                    <p>{% lang "Jika menggunakan firewall" "If you use the" %} <code class="rounded bg-gray-900 px-1.5 py-0.5 text-xs text-blue-200">ufw</code> {% lang "buka port monitoring:" "firewall, open the monitoring port:" %}</p>
+                                    <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                        <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                            <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                            <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-firewall">{% lang "Copy" "Copy" %}</button>
+                                        </div>
+                                        <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-firewall">ufw allow 9000/tcp</code></pre>
+                                    </div>
+                                </section>
+
+                                <section class="space-y-2 border-t border-blue-500/20 pt-5">
+                                    <h5 class="font-semibold text-blue-200">7. {% lang "Test Endpoint Monitoring" "Test the Monitoring Endpoint" %}</h5>
+                                    <p>{% lang "Cek endpoint health monitoring:" "Check the health monitoring endpoint:" %}</p>
+                                    <div class="rounded-lg border border-gray-700 bg-gray-900">
+                                        <div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+                                            <span class="text-xs font-bold uppercase tracking-wide text-gray-500">bash</span>
+                                            <button type="button" class="copy-agent-command rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-blue-500" data-copy-target="agent-command-health">{% lang "Copy" "Copy" %}</button>
+                                        </div>
+                                        <pre class="overflow-x-auto whitespace-pre-wrap p-3 text-xs text-gray-200"><code id="agent-command-health">curl http://localhost:9000/health</code></pre>
+                                    </div>
+                                </section>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 border-t border-gray-700 p-6">
+                        <button type="button" id="cancel-agent-modal" class="px-5 py-2 text-sm font-bold text-gray-400 hover:text-white">{% lang "Tutup" "Close" %}</button>
+                        <button type="button" id="save-agent-modal" class="rounded-xl bg-emerald-600 px-6 py-2 text-sm font-bold text-white hover:bg-emerald-500">{% lang "Simpan Agent" "Save Agent" %}</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/markdown-text-editor@1.1.5/dist/markdown-text-editor.min.js"></script>
+<script>
+    document.querySelectorAll('.markdown-editor').forEach(function (editor) {
+        new MarkdownEditor('#' + editor.id);
+        const wrapper = editor.closest('.markdown-text-editor') || editor.parentElement;
+        if (wrapper) {
+            wrapper.classList.add('catalog-markdown-editor');
+        }
+    });
+
+    const agentModal = document.getElementById('agent-monitor-modal');
+    const openAgentModal = document.getElementById('open-agent-modal');
+    const closeAgentModal = document.getElementById('close-agent-modal');
+    const cancelAgentModal = document.getElementById('cancel-agent-modal');
+    const saveAgentModal = document.getElementById('save-agent-modal');
+
+    function showAgentModal() {
+        if (agentModal) {
+            agentModal.classList.remove('hidden');
+            agentModal.classList.add('flex');
+        }
+    }
+
+    function hideAgentModal() {
+        if (agentModal) {
+            agentModal.classList.add('hidden');
+            agentModal.classList.remove('flex');
+        }
+    }
+
+    if (openAgentModal) openAgentModal.addEventListener('click', showAgentModal);
+    if (closeAgentModal) closeAgentModal.addEventListener('click', hideAgentModal);
+    if (cancelAgentModal) cancelAgentModal.addEventListener('click', hideAgentModal);
+    if (saveAgentModal) saveAgentModal.addEventListener('click', hideAgentModal);
+    document.querySelectorAll('.copy-agent-command').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const commandEl = document.getElementById(button.dataset.copyTarget);
+            if (!commandEl) return;
+            navigator.clipboard.writeText(commandEl.innerText).then(function () {
+                const originalText = button.innerText;
+                button.innerText = '{% lang "Tersalin" "Copied" %}';
+                window.setTimeout(function () {
+                    button.innerText = originalText;
+                }, 1200);
+            });
+        });
+    });
+</script>
 {% endblock %}

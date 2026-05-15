@@ -84,7 +84,7 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                        <span class="status-dot h-2 w-2 bg-gray-600 rounded-full" id="dot-list-{{ app.id }}" data-status-url="{% url 'application_status' app.id %}"></span>
+                        <span class="status-dot h-2 w-2 bg-gray-600 rounded-full" id="dot-list-{{ app.id }}"></span>
                         <span class="text-[10px] font-bold text-gray-500 uppercase" id="text-list-{{ app.id }}">Checking</span>
                     </div>
                 </td>
@@ -115,60 +115,43 @@
 
 {% block extra_js %}
 <script>
+    const applicationStatusStreamUrl = "{% url 'application_status_stream' %}";
     const statusText = {
         noUrl: "{% lang 'No URL' 'No URL' %}",
         online: "{% lang 'Online' 'Online' %}",
         offline: "{% lang 'Offline' 'Offline' %}"
     };
 
-    async function checkStatus(appId, statusUrl) {
+    function updateApplicationListStatus(result) {
+        const appId = result.app_id;
         const dot = document.getElementById(`dot-list-${appId}`);
         const text = document.getElementById(`text-list-${appId}`);
 
-        if (!statusUrl) {
+        if (!dot || !text) return;
+
+        if (!result.checked_url && !result.checked_urls?.length) {
             dot.className = "h-2 w-2 bg-gray-600 rounded-full";
             text.innerText = statusText.noUrl;
+            text.className = "text-[10px] font-bold text-gray-500 uppercase";
             return;
         }
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-        try {
-            const response = await fetch(statusUrl, {
-                signal: controller.signal,
-                cache: 'no-cache',
-                headers: { 'Accept': 'application/json' },
-            });
-            const result = await response.json();
-
-            if (result.online) {
-                dot.className = "h-2 w-2 bg-green-500 rounded-full online-pulse";
-                text.innerText = statusText.online;
-                text.className = "text-[10px] font-bold text-green-500 uppercase";
-            } else {
-                dot.className = "h-2 w-2 bg-red-600 rounded-full";
-                text.innerText = statusText.offline;
-                text.className = "text-[10px] font-bold text-red-500 uppercase";
-            }
-            clearTimeout(timeoutId);
-        } catch (err) {
+        if (result.online) {
+            dot.className = "h-2 w-2 bg-green-500 rounded-full online-pulse";
+            text.innerText = statusText.online;
+            text.className = "text-[10px] font-bold text-green-500 uppercase";
+        } else {
             dot.className = "h-2 w-2 bg-red-600 rounded-full";
             text.innerText = statusText.offline;
             text.className = "text-[10px] font-bold text-red-500 uppercase";
         }
     }
 
-    function runChecks() {
-        const dots = document.querySelectorAll('[id^="dot-list-"]');
-        dots.forEach(dot => {
-            const appId = dot.id.replace('dot-list-', '');
-            const statusUrl = dot.getAttribute('data-status-url');
-            checkStatus(appId, statusUrl);
-        });
+    if (document.querySelector('[id^="dot-list-"]')) {
+        const events = new EventSource(applicationStatusStreamUrl);
+        events.onmessage = function (event) {
+            JSON.parse(event.data).forEach(updateApplicationListStatus);
+        };
     }
-
-    runChecks();
-    setInterval(runChecks, 60000);
 </script>
 {% endblock %}

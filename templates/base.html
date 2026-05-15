@@ -205,6 +205,10 @@
         body.light-mode .brand-text {
             background-image: linear-gradient(to right, #1d4ed8, #059669) !important;
         }
+        .theme-logo-light { display: none; }
+        .theme-logo-dark { display: block; }
+        body.light-mode .theme-logo-light { display: block; }
+        body.light-mode .theme-logo-dark { display: none; }
         body.light-mode .markdown-content h1,
         body.light-mode .markdown-content h2,
         body.light-mode .markdown-content h3 {
@@ -240,8 +244,9 @@
         <aside class="w-64 bg-gray-800/50 border-r border-gray-700 hidden lg:flex flex-col">
             <div class="p-6">
                 <div class="flex items-center gap-3 mb-10">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden bg-white">
-                        <img src="{% static 'img/appcatalog-logo.svg' %}" alt="AppCatalog" class="w-full h-full object-contain">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
+                        <img src="{% static 'img/logo-dark.png' %}" alt="AppCatalog" class="theme-logo-dark w-full h-full object-contain">
+                        <img src="{% static 'img/logo-light.png' %}" alt="AppCatalog" class="theme-logo-light w-full h-full object-contain">
                     </div>
                     <span class="brand-text text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AppCatalog</span>
                 </div>

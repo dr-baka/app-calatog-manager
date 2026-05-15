@@ -60,6 +60,138 @@
     </div>
 </div>
 
+{% if server_agent_monitors %}
+<div class="mb-10">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold flex items-center gap-2">
+            <i class="fas fa-chart-line text-emerald-500"></i> {% lang "Live Server Agent Monitor" "Live Server Agent Monitor" %}
+        </h2>
+        <span class="text-xs font-bold text-gray-500 uppercase">{% lang "Update tiap 1 detik" "Updates every 1 second" %}</span>
+    </div>
+    <div id="agent-monitor-grid" class="space-y-8">
+        {% for monitor in server_agent_monitors %}
+        <div id="agent-card-{{ monitor.server_id }}" class="bg-gray-950 rounded-2xl border border-gray-700 shadow-xl overflow-hidden" data-server-id="{{ monitor.server_id }}">
+            <div class="p-4 border-b border-gray-700 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h3 class="font-bold text-lg">{{ monitor.server.name }}</h3>
+                        <span class="agent-status rounded-full border border-gray-500 px-2.5 py-0.5 text-[10px] font-bold text-gray-400">{% lang "Menunggu" "Waiting" %}</span>
+                        <span class="agent-health rounded-full border border-gray-500 px-2.5 py-0.5 text-[10px] font-bold text-gray-400">-</span>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-500 font-mono">
+                        <span class="agent-hostname">{{ monitor.server.host_ip }}</span>
+                        <span class="mx-1">•</span>
+                        <span class="agent-version">-</span>
+                    </p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="rounded-lg border border-gray-500 p-2.5">
+                        <p class="text-[10px] font-bold text-gray-500">Hostname</p>
+                        <p class="agent-top-hostname mt-1 text-xs font-bold">-</p>
+                    </div>
+                    <div class="rounded-lg border border-gray-500 p-2.5">
+                        <p class="text-[10px] font-bold text-gray-500">Version</p>
+                        <p class="agent-top-version mt-1 text-xs font-bold">-</p>
+                    </div>
+                    <div class="rounded-lg border border-gray-500 p-2.5">
+                        <p class="text-[10px] font-bold text-gray-500">Uptime</p>
+                        <p class="agent-uptime mt-1 text-xs font-bold">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 space-y-5">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="rounded-xl border border-gray-500 p-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-gray-500">CPU</p>
+                            <span class="agent-cpu-health rounded-full border border-green-300 px-2.5 py-0.5 text-[10px] font-bold text-green-300">Healthy</span>
+                        </div>
+                        <p class="agent-cpu mt-2 text-2xl font-bold text-green-400">0.0%</p>
+                        <div class="mt-4 flex justify-between text-xs font-bold">
+                            <span>CPU</span>
+                            <span class="agent-cpu-small text-green-400">0.0%</span>
+                        </div>
+                        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+                            <div class="agent-cpu-bar h-full rounded-full bg-green-400" style="width:0%"></div>
+                        </div>
+                        <p class="agent-load mt-2 text-[10px] text-gray-500">Load: -</p>
+                    </div>
+                    <div class="rounded-xl border border-gray-500 p-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-gray-500">{% lang "Memori" "Memory" %}</p>
+                            <span class="agent-memory-health rounded-full border border-green-300 px-2.5 py-0.5 text-[10px] font-bold text-green-300">Healthy</span>
+                        </div>
+                        <p class="agent-memory mt-2 text-2xl font-bold text-green-400">0.0%</p>
+                        <div class="mt-4 flex justify-between text-xs font-bold">
+                            <span>{% lang "Memori" "Memory" %}</span>
+                            <span class="agent-memory-small text-green-400">0.0%</span>
+                        </div>
+                        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+                            <div class="agent-memory-bar h-full rounded-full bg-green-400" style="width:0%"></div>
+                        </div>
+                        <p class="agent-memory-detail mt-2 text-[10px] text-gray-500">-</p>
+                    </div>
+                    <div class="rounded-xl border border-gray-500 p-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-gray-500">Swap</p>
+                            <span class="agent-swap-health rounded-full border border-green-300 px-2.5 py-0.5 text-[10px] font-bold text-green-300">Healthy</span>
+                        </div>
+                        <p class="agent-swap mt-2 text-2xl font-bold text-green-400">0.0%</p>
+                        <div class="mt-4 flex justify-between text-xs font-bold">
+                            <span>Swap</span>
+                            <span class="agent-swap-small text-green-400">0.0%</span>
+                        </div>
+                        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+                            <div class="agent-swap-bar h-full rounded-full bg-green-400" style="width:0%"></div>
+                        </div>
+                        <p class="agent-swap-detail mt-2 text-[10px] text-gray-500">-</p>
+                    </div>
+                </div>
+
+                <div class="agent-gpu-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3"></div>
+
+                <div>
+                    <div class="mb-3 flex items-center justify-between">
+                        <p class="font-bold">{% lang "Disk" "Disks" %}</p>
+                        <p class="agent-disk-count text-[10px] text-gray-500">0 mount points</p>
+                    </div>
+                    <div class="agent-disk-list grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3"></div>
+                </div>
+
+                <div class="rounded-xl border border-gray-500 overflow-hidden">
+                    <div class="flex items-center justify-between p-4">
+                        <div>
+                            <p class="font-bold">{% lang "Jaringan" "Network" %}</p>
+                            <p class="text-xs text-gray-500">{% lang "Interface utama ditampilkan secara default." "Primary interfaces are shown by default." %}</p>
+                        </div>
+                        <button type="button" class="agent-network-toggle rounded-lg border border-cyan-400/40 px-3 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-400/10" data-show-all="false">
+                            {% lang "Tampilkan semua jaringan" "Show all networks" %}
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-800 text-gray-500 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-5 py-3">Interface</th>
+                                    <th class="px-5 py-3">RX</th>
+                                    <th class="px-5 py-3">TX</th>
+                                    <th class="px-5 py-3">RX Packets</th>
+                                    <th class="px-5 py-3">TX Packets</th>
+                                </tr>
+                            </thead>
+                            <tbody class="agent-network divide-y divide-gray-800 text-gray-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="agent-error hidden text-xs text-red-400"></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Header Apps -->
 <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl font-bold flex items-center gap-2">
@@ -90,7 +222,7 @@
                 {% endif %}
             </div>
             <div class="flex flex-col items-end">
-                <span id="dot-{{ app.id }}" class="status-dot h-3 w-3 bg-gray-600 rounded-full" data-status-url="{% url 'application_status' app.id %}"></span>
+                <span id="dot-{{ app.id }}" class="status-dot h-3 w-3 bg-gray-600 rounded-full"></span>
                 <span id="text-{{ app.id }}" class="text-[10px] uppercase mt-1 text-gray-500 font-bold">Checking</span>
             </div>
         </div>
@@ -159,48 +291,35 @@
 
 {% block extra_js %}
 <script>
+    const agentStreamUrl = "{% url 'server_agent_metrics_stream' %}";
+    const applicationStatusStreamUrl = "{% url 'application_status_stream' %}";
     const statusText = {
         noUrl: "{% lang 'No URL' 'No URL' %}",
         online: "{% lang 'Online' 'Online' %}",
         offline: "{% lang 'Offline' 'Offline' %}"
     };
 
-    async function checkStatus(appId, statusUrl) {
+    function updateApplicationStatus(result) {
+        const appId = result.app_id;
         const dot = document.getElementById(`dot-${appId}`);
         const text = document.getElementById(`text-${appId}`);
         const card = document.getElementById(`card-${appId}`);
 
-        if (!statusUrl) {
+        if (!dot || !text || !card) return;
+
+        if (!result.checked_url && !result.checked_urls?.length) {
             dot.className = "status-dot h-3 w-3 bg-gray-600 rounded-full";
             text.innerText = statusText.noUrl;
+            text.className = "text-[10px] uppercase mt-1 text-gray-500 font-bold";
             return;
         }
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-        try {
-            const response = await fetch(statusUrl, {
-                signal: controller.signal,
-                cache: 'no-cache',
-                headers: { 'Accept': 'application/json' },
-            });
-            const result = await response.json();
-
-            if (result.online) {
-                dot.className = "status-dot h-3 w-3 bg-green-500 rounded-full online-pulse";
-                text.innerText = statusText.online;
-                text.className = "text-[10px] uppercase mt-1 text-green-500 font-bold";
-                card.classList.remove('opacity-60');
-            } else {
-                dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
-                text.innerText = statusText.offline;
-                text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
-                card.classList.add('opacity-60');
-            }
-            clearTimeout(timeoutId);
-
-        } catch (err) {
+        if (result.online) {
+            dot.className = "status-dot h-3 w-3 bg-green-500 rounded-full online-pulse";
+            text.innerText = statusText.online;
+            text.className = "text-[10px] uppercase mt-1 text-green-500 font-bold";
+            card.classList.remove('opacity-60');
+        } else {
             dot.className = "status-dot h-3 w-3 bg-red-600 rounded-full";
             text.innerText = statusText.offline;
             text.className = "text-[10px] uppercase mt-1 text-red-500 font-bold";
@@ -208,18 +327,272 @@
         }
     }
 
-    function runChecks() {
-        const dots = document.querySelectorAll('.status-dot');
-        dots.forEach(dot => {
-            const appId = dot.id.replace('dot-', '');
-            const statusUrl = dot.getAttribute('data-status-url');
-            checkStatus(appId, statusUrl);
-        });
+    if (document.querySelector('.status-dot')) {
+        const appStatusEvents = new EventSource(applicationStatusStreamUrl);
+        appStatusEvents.onmessage = function (event) {
+            JSON.parse(event.data).forEach(updateApplicationStatus);
+        };
     }
 
-    // Initial check
-    runChecks();
-    // Re-check every 30 seconds
-    setInterval(runChecks, 30000);
+    function formatBytes(bytes) {
+        if (!bytes && bytes !== 0) return '-';
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        let value = Number(bytes);
+        let index = 0;
+        while (value >= 1024 && index < units.length - 1) {
+            value /= 1024;
+            index += 1;
+        }
+        return `${value.toFixed(value >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
+    }
+
+    function clampPercent(value) {
+        return Math.max(0, Math.min(100, Number(value || 0)));
+    }
+
+    function formatUptime(seconds) {
+        const total = Number(seconds || 0);
+        const days = Math.floor(total / 86400);
+        const hours = Math.floor((total % 86400) / 3600);
+        if (days > 0) return `${days} hari`;
+        return `${hours} jam`;
+    }
+
+    function metricColor(percent) {
+        if (percent > 80) return {
+            bar: 'bg-red-500',
+            text: 'text-red-500',
+            border: 'border-red-300',
+            label: 'Critical',
+        };
+        if (percent > 45) return {
+            bar: 'bg-yellow-400',
+            text: 'text-yellow-400',
+            border: 'border-yellow-300',
+            label: 'Warning',
+        };
+        return {
+            bar: 'bg-green-400',
+            text: 'text-green-400',
+            border: 'border-green-300',
+            label: 'Healthy',
+        };
+    }
+
+    function setHealth(el, value) {
+        if (!el) return;
+        const percent = clampPercent(value);
+        const color = metricColor(percent);
+        el.textContent = color.label;
+        el.className = `${el.classList[0]} rounded-full border ${color.border} px-2.5 py-0.5 text-[10px] font-bold ${color.text}`;
+    }
+
+    function barColor(percent) {
+        return metricColor(percent).bar;
+    }
+
+    function renderProgressBar(percent, colorClass = null) {
+        const color = colorClass || barColor(percent);
+        return `
+            <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+                <div class="h-full rounded-full ${color}" style="width:${percent}%"></div>
+            </div>
+        `;
+    }
+
+    function isPrimaryNetworkInterface(name) {
+        const normalized = String(name || '').toLowerCase();
+        if (!normalized || normalized === 'lo') return false;
+        if (/^(docker|br-|veth|virbr|vmnet|vboxnet|tun|tap|zt|tailscale|wg|cni|flannel|kube|calico)/.test(normalized)) return false;
+        return /^(eth|en|eno|ens|enp|wlan|wl|wifi|wlp|bond|team)/.test(normalized);
+    }
+
+    function renderNetworkRows(networks, showAll) {
+        const visibleNetworks = showAll ? networks : networks.filter((net) => isPrimaryNetworkInterface(net.interface));
+        const hiddenCount = networks.length - visibleNetworks.length;
+        const rows = visibleNetworks.length
+            ? visibleNetworks.map((net) => `
+                    <tr>
+                        <td class="px-4 py-3 font-bold">${net.interface || '-'}</td>
+                        <td class="px-4 py-3">${formatBytes(net.rx_bytes)}</td>
+                        <td class="px-4 py-3">${formatBytes(net.tx_bytes)}</td>
+                        <td class="px-4 py-3">${net.rx_packets ?? 0}</td>
+                        <td class="px-4 py-3">${net.tx_packets ?? 0}</td>
+                    </tr>
+                `).join('')
+            : '<tr><td colspan="5" class="px-4 py-3 text-gray-500">-</td></tr>';
+
+        return { rows, hiddenCount };
+    }
+
+    function updateAgentCard(item) {
+        const card = document.getElementById(`agent-card-${item.server_id}`);
+        if (!card) return;
+
+        const status = card.querySelector('.agent-status');
+        const health = card.querySelector('.agent-health');
+        const error = card.querySelector('.agent-error');
+
+        if (!item.online || !item.metrics) {
+            status.textContent = statusText.offline;
+            status.className = 'agent-status rounded-full border border-red-300 px-3 py-1 text-[10px] font-bold text-red-300';
+            health.textContent = 'Critical';
+            health.className = 'agent-health rounded-full border border-red-300 px-3 py-1 text-[10px] font-bold text-red-300';
+            error.textContent = item.error || statusText.offline;
+            error.classList.remove('hidden');
+            return;
+        }
+
+        const metrics = item.metrics;
+        const cpu = clampPercent(metrics.cpu?.usage_percent);
+        const memory = clampPercent(metrics.memory?.usage_percent);
+        const swap = clampPercent(metrics.memory?.swap_usage_percent);
+        const disks = metrics.disks || [];
+        const networks = metrics.network || [];
+        const gpus = metrics.gpu || [];
+        const criticalGpu = gpus.some((gpu) => clampPercent(gpu.utilization_percent) > 80 || clampPercent((gpu.memory_used_mb || 0) / (gpu.memory_total_mb || 1) * 100) > 80 || Number(gpu.temperature_celsius || 0) >= 85);
+        const criticalSystem = cpu > 80 || memory > 80 || swap > 80 || disks.some((disk) => clampPercent(disk.usage_percent) > 80) || criticalGpu;
+
+        status.textContent = statusText.online;
+        status.className = 'agent-status rounded-full border border-green-300 px-2.5 py-0.5 text-[10px] font-bold text-green-300';
+        health.textContent = criticalSystem ? 'Critical' : 'Healthy';
+        health.className = `agent-health rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${criticalSystem ? 'border-red-300 text-red-300' : 'border-green-300 text-green-300'}`;
+        error.classList.add('hidden');
+
+        card.querySelector('.agent-hostname').textContent = metrics.hostname || item.host_ip || '-';
+        card.querySelector('.agent-version').textContent = metrics.version || '-';
+        card.querySelector('.agent-top-hostname').textContent = metrics.hostname || '-';
+        card.querySelector('.agent-top-version').textContent = metrics.version || '-';
+        card.querySelector('.agent-uptime').textContent = formatUptime(metrics.uptime_seconds);
+
+        card.querySelector('.agent-cpu').textContent = `${cpu.toFixed(1)}%`;
+        card.querySelector('.agent-cpu-small').textContent = `${cpu.toFixed(1)}%`;
+        card.querySelector('.agent-cpu').className = `agent-cpu mt-2 text-2xl font-bold ${metricColor(cpu).text}`;
+        card.querySelector('.agent-cpu-small').className = `agent-cpu-small ${metricColor(cpu).text}`;
+        card.querySelector('.agent-cpu-bar').style.width = `${cpu}%`;
+        card.querySelector('.agent-cpu-bar').className = `agent-cpu-bar h-full rounded-full ${barColor(cpu)}`;
+        card.querySelector('.agent-load').textContent = `Load: ${metrics.cpu?.load_average?.['1m'] ?? '-'} / ${metrics.cpu?.load_average?.['5m'] ?? '-'} / ${metrics.cpu?.load_average?.['15m'] ?? '-'}`;
+        setHealth(card.querySelector('.agent-cpu-health'), cpu);
+
+        card.querySelector('.agent-memory').textContent = `${memory.toFixed(1)}%`;
+        card.querySelector('.agent-memory-small').textContent = `${memory.toFixed(1)}%`;
+        card.querySelector('.agent-memory').className = `agent-memory mt-2 text-2xl font-bold ${metricColor(memory).text}`;
+        card.querySelector('.agent-memory-small').className = `agent-memory-small ${metricColor(memory).text}`;
+        card.querySelector('.agent-memory-bar').style.width = `${memory}%`;
+        card.querySelector('.agent-memory-bar').className = `agent-memory-bar h-full rounded-full ${barColor(memory)}`;
+        card.querySelector('.agent-memory-detail').textContent = `${formatBytes(metrics.memory?.used_bytes)} / ${formatBytes(metrics.memory?.total_bytes)}`;
+        setHealth(card.querySelector('.agent-memory-health'), memory);
+
+        card.querySelector('.agent-swap').textContent = `${swap.toFixed(1)}%`;
+        card.querySelector('.agent-swap-small').textContent = `${swap.toFixed(1)}%`;
+        card.querySelector('.agent-swap').className = `agent-swap mt-2 text-2xl font-bold ${metricColor(swap).text}`;
+        card.querySelector('.agent-swap-small').className = `agent-swap-small ${metricColor(swap).text}`;
+        card.querySelector('.agent-swap-bar').style.width = `${swap}%`;
+        card.querySelector('.agent-swap-bar').className = `agent-swap-bar h-full rounded-full ${barColor(swap)}`;
+        card.querySelector('.agent-swap-detail').textContent = `${formatBytes(metrics.memory?.swap_used_bytes)} / ${formatBytes(metrics.memory?.swap_total_bytes)}`;
+        setHealth(card.querySelector('.agent-swap-health'), swap);
+
+        const gpuGrid = card.querySelector('.agent-gpu-grid');
+        gpuGrid.innerHTML = gpus.length ? gpus.map((gpu) => {
+            const usage = clampPercent(gpu.utilization_percent);
+            const memoryUsage = clampPercent((Number(gpu.memory_used_mb || 0) / Math.max(Number(gpu.memory_total_mb || 1), 1)) * 100);
+            const temp = Number(gpu.temperature_celsius || 0);
+            const power = Number(gpu.power_watt || 0);
+            const usageColor = metricColor(usage);
+            const memoryColor = metricColor(memoryUsage);
+            const isCritical = usage > 80 || memoryUsage > 80 || temp >= 85;
+            return `
+                <div class="rounded-lg border border-gray-500 p-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-green-400">GPU</p>
+                        <span class="rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${isCritical ? 'border-red-300 text-red-300' : 'border-green-300 text-green-300'}">${isCritical ? 'Critical' : 'Healthy'}</span>
+                    </div>
+                    <h4 class="mt-2 truncate text-sm font-bold" title="${gpu.name || `GPU ${gpu.index ?? '-'}`}">${gpu.name || `GPU ${gpu.index ?? '-'}`}</h4>
+                    <div class="mt-3 grid grid-cols-1 gap-3">
+                        <div>
+                            <div class="flex justify-between text-[11px] font-bold">
+                                <span>Utilization</span>
+                                <span class="${usageColor.text}">${usage.toFixed(1)}%</span>
+                            </div>
+                            ${renderProgressBar(usage)}
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] font-bold">
+                                <span>Memory</span>
+                                <span class="${memoryColor.text}">${memoryUsage.toFixed(1)}%</span>
+                            </div>
+                            ${renderProgressBar(memoryUsage)}
+                            <p class="mt-2 text-[10px] text-gray-500">${gpu.memory_used_mb || 0} MB / ${gpu.memory_total_mb || 0} MB</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <div class="rounded-lg border border-gray-700 bg-gray-900/50 p-2.5">
+                            <p class="text-[10px] text-gray-500">Temperature</p>
+                            <p class="mt-1 text-base font-bold ${temp > 80 ? 'text-red-500' : temp > 45 ? 'text-yellow-400' : 'text-green-400'}">${temp.toFixed(1)} C</p>
+                        </div>
+                        <div class="rounded-lg border border-gray-700 bg-gray-900/50 p-2.5">
+                            <p class="text-[10px] text-gray-500">Power</p>
+                            <p class="mt-1 text-base font-bold text-gray-100">${power.toFixed(2)} W</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('') : '<p class="text-sm text-gray-500">No GPU data</p>';
+
+        const diskList = card.querySelector('.agent-disk-list');
+        if (disks.length) {
+            card.querySelector('.agent-disk-count').textContent = `${disks.length} mount points`;
+            diskList.innerHTML = disks.map((disk) => {
+                const usage = clampPercent(disk.usage_percent);
+                return `
+                    <div class="rounded-lg border border-gray-500 p-3">
+                        <div class="flex justify-between gap-3 text-[11px] font-bold">
+                            <span class="truncate" title="${disk.mount || disk.device || '-'}">Disk ${disk.mount || disk.device || '-'}</span>
+                            <span class="${metricColor(usage).text}">${usage.toFixed(1)}%</span>
+                        </div>
+                        ${renderProgressBar(usage)}
+                        <p class="mt-2 text-[10px] text-gray-500">${formatBytes(disk.used_bytes)} / ${formatBytes(disk.total_bytes)}</p>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            card.querySelector('.agent-disk-count').textContent = '0 mount points';
+            diskList.innerHTML = '<p class="text-xs text-gray-500">-</p>';
+        }
+
+        const networkToggle = card.querySelector('.agent-network-toggle');
+        const showAllNetworks = networkToggle?.dataset.showAll === 'true';
+        const renderedNetwork = renderNetworkRows(networks, showAllNetworks);
+        card.querySelector('.agent-network').innerHTML = networks.length
+            ? renderedNetwork.rows
+            : '<tr><td colspan="5" class="px-4 py-3 text-gray-500">-</td></tr>';
+        if (networkToggle) {
+            networkToggle.classList.toggle('hidden', renderedNetwork.hiddenCount <= 0);
+            networkToggle.textContent = showAllNetworks
+                ? "{% lang 'Sembunyikan jaringan virtual' 'Hide virtual networks' %}"
+                : `{% lang 'Tampilkan semua jaringan' 'Show all networks' %}${renderedNetwork.hiddenCount > 0 ? ` (${renderedNetwork.hiddenCount})` : ''}`;
+        }
+    }
+
+    if (document.getElementById('agent-monitor-grid')) {
+        const latestAgentItems = {};
+
+        document.querySelectorAll('.agent-network-toggle').forEach((button) => {
+            button.addEventListener('click', () => {
+                button.dataset.showAll = button.dataset.showAll === 'true' ? 'false' : 'true';
+                const card = button.closest('[data-server-id]');
+                const latestItem = card ? latestAgentItems[card.dataset.serverId] : null;
+                if (latestItem) updateAgentCard(latestItem);
+            });
+        });
+
+        const events = new EventSource(agentStreamUrl);
+        events.onmessage = function (event) {
+            JSON.parse(event.data).forEach((item) => {
+                latestAgentItems[item.server_id] = item;
+                updateAgentCard(item);
+            });
+        };
+    }
 </script>
 {% endblock %}

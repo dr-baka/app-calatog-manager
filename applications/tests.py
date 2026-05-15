@@ -5,7 +5,7 @@ from django.urls import reverse
 from unittest.mock import Mock, patch
 import requests
 from .models import AppAdmin, Application, ApplicationEnvironment, UpdateHistory
-from .views import build_status_endpoints
+from .views import build_application_status_payload, build_status_endpoints
 from categories.models import Category
 from servers.models import Server
 
@@ -159,6 +159,36 @@ class ApplicationManagementTests(TestCase):
         self.assertEqual(response.json()['status'], 'online')
         self.assertEqual(response.json()['checked_url'], 'http://10.10.10.5:8080')
         self.assertEqual(mocked_get.call_count, 3)
+
+    def test_application_status_stream_requires_login(self):
+        self.client.logout()
+
+        response = self.client.get(reverse('application_status_stream'))
+
+        self.assertEqual(response.status_code, 302)
+
+    @patch('applications.views.is_endpoint_online')
+    def test_application_status_payload_uses_highest_environment(self, mocked_online):
+        ApplicationEnvironment.objects.create(
+            application=self.app,
+            environment='DEV',
+            server=self.server,
+            url='https://dev.example.com',
+        )
+        ApplicationEnvironment.objects.create(
+            application=self.app,
+            environment='PROD',
+            server=self.server,
+            url='https://prod.example.com',
+        )
+        mocked_online.return_value = True
+
+        payload = build_application_status_payload()
+        app_payload = next(item for item in payload if item['app_id'] == self.app.pk)
+
+        self.assertTrue(app_payload['online'])
+        self.assertEqual(app_payload['environment'], 'PROD')
+        self.assertEqual(app_payload['checked_url'], 'https://prod.example.com')
 
     def test_highest_environment_uses_dev_beta_prod_order(self):
         ApplicationEnvironment.objects.create(application=self.app, environment='DEV', server=self.server)

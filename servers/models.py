@@ -12,3 +12,12 @@ class Server(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.host_ip})"
+
+
+class ServerAgentMonitor(models.Model):
+    server = models.OneToOneField(Server, on_delete=models.CASCADE, related_name='agent_monitor')
+    agent_url = models.URLField(max_length=500)
+    agent_auth_key = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Agent Monitor - {self.server.name}"
