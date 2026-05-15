@@ -39,9 +39,13 @@ def markdownify(value):
     try:
         import markdown
 
+        extensions = ['fenced_code', 'sane_lists', 'tables']
+        if not _has_markdown_table(value):
+            extensions.append('nl2br')
+
         html = markdown.markdown(
             escaped_value,
-            extensions=['fenced_code', 'nl2br', 'sane_lists'],
+            extensions=extensions,
             output_format='html5',
         )
     except ImportError:
@@ -50,12 +54,34 @@ def markdownify(value):
     return mark_safe(html)
 
 
+def _has_markdown_table(value):
+    lines = [line.strip() for line in value.splitlines()]
+    return any(
+        line.startswith('|') and set(line.replace('|', '').replace(':', '').strip()) <= {'-'}
+        for line in lines
+    )
+
+
 def _basic_markdown(value):
     lines = value.splitlines()
     html_lines = []
     in_list = False
+    index = 0
 
-    for line in lines:
+    while index < len(lines):
+        line = lines[index]
+        if _is_table_header(lines, index):
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+            headers = _split_table_row(lines[index])
+            index += 2
+            rows = []
+            while index < len(lines) and lines[index].strip().startswith('|'):
+                rows.append(_split_table_row(lines[index]))
+                index += 1
+            html_lines.append(_render_basic_table(headers, rows))
+            continue
         if line.startswith('### '):
             if in_list:
                 html_lines.append('</ul>')
@@ -85,6 +111,7 @@ def _basic_markdown(value):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+        index += 1
 
     if in_list:
         html_lines.append('</ul>')
@@ -93,3 +120,32 @@ def _basic_markdown(value):
     html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
     html = re.sub(r'`(.+?)`', r'<code>\1</code>', html)
     return html
+
+
+def _is_table_header(lines, index):
+    if index + 1 >= len(lines):
+        return False
+
+    header = lines[index].strip()
+    separator = lines[index + 1].strip()
+    if not header.startswith('|') or not separator.startswith('|'):
+        return False
+
+    separator_cells = _split_table_row(separator)
+    return bool(separator_cells) and all(
+        set(cell.replace(':', '').strip()) <= {'-'} and '-' in cell
+        for cell in separator_cells
+    )
+
+
+def _split_table_row(line):
+    return [cell.strip() for cell in line.strip().strip('|').split('|')]
+
+
+def _render_basic_table(headers, rows):
+    header_html = ''.join(f'<th>{header}</th>' for header in headers)
+    row_html = []
+    for row in rows:
+        cells = ''.join(f'<td>{cell}</td>' for cell in row)
+        row_html.append(f'<tr>{cells}</tr>')
+    return f'<table><thead><tr>{header_html}</tr></thead><tbody>{"".join(row_html)}</tbody></table>'

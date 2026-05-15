@@ -70,6 +70,20 @@ class ServerAgentMonitorTests(TestCase):
         self.assertContains(response, 'Live Server Agent Monitor')
         self.assertContains(response, 'VM 01')
 
+    def test_server_list_renders_specs_as_markdown_html(self):
+        self.client.force_login(self.user)
+        self.server.specs = '| Spec | Desc |\n| --- | --- |\n| Proc | 128 cores |\n| Mem | 220 GB |'
+        self.server.deployment_notes = '`docker compose up -d`'
+        self.server.save()
+
+        response = self.client.get(reverse('server_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<table>')
+        self.assertContains(response, '<th>Spec</th>', html=True)
+        self.assertContains(response, '<td>128 cores</td>', html=True)
+        self.assertContains(response, '<code>docker compose up -d</code>', html=True)
+
     def test_server_create_can_add_agent_monitor(self):
         self.client.force_login(self.user)
 

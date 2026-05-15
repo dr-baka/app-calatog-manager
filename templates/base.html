@@ -68,6 +68,26 @@
         .markdown-content ul { list-style: disc; }
         .markdown-content ol { list-style: decimal; }
         .markdown-content a { color: #60a5fa; text-decoration: underline; }
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.75rem 0;
+            overflow: hidden;
+            border: 1px solid rgba(75, 85, 99, 0.7);
+            border-radius: 0.75rem;
+        }
+        .markdown-content th,
+        .markdown-content td {
+            border: 1px solid rgba(75, 85, 99, 0.7);
+            padding: 0.55rem 0.75rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .markdown-content th {
+            background: rgba(31, 41, 55, 0.9);
+            color: #f9fafb;
+            font-weight: 700;
+        }
         .markdown-content code {
             background: rgba(17, 24, 39, 0.9);
             border: 1px solid rgba(75, 85, 99, 0.7);
@@ -86,7 +106,6 @@
         .markdown-content pre code {
             background: transparent;
             border: 0;
-            padding: 0;
         }
 
         body,
@@ -212,6 +231,15 @@
         body.light-mode .markdown-content h1,
         body.light-mode .markdown-content h2,
         body.light-mode .markdown-content h3 {
+            color: #0f172a;
+        }
+        body.light-mode .markdown-content table,
+        body.light-mode .markdown-content th,
+        body.light-mode .markdown-content td {
+            border-color: #cbd5e1;
+        }
+        body.light-mode .markdown-content th {
+            background: #f1f5f9;
             color: #0f172a;
         }
         body.light-mode .markdown-content code,
